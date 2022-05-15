@@ -6,6 +6,11 @@
 --   |_|_| |_|_|\__(_)_|\__,_|\__,_|
 --  
 -- ====================================
+-- Resources:
+-- https://github.com/nanotee/nvim-lua-guide
+-- https://github.com/nvim-lua/kickstart.nvim
+-- https://www.youtube.com/playlist?list=PLhoH5vyxr6Qq41NFL4GvhFp-WLd5xzIzZ
+-- https://github.com/LunarVim/Neovim-from-scratch
 
 local fn = vim.fn
 local g = vim.g
@@ -15,7 +20,6 @@ g.maplocalleader = " "
 
 vim.cmd([[
 set mouse=a
-set encoding=utf-8
 set number relativenumber 
 set completeopt=menu,menuone,noselect
 set linebreak 
@@ -32,10 +36,10 @@ set signcolumn=number
 set breakindent 
 set path+=** 
 set hidden
-set expandtab " Expand tabs into spaces
-set tabstop=4 " default to 4 spaces for hard tab
-set softtabstop=4 " default to 4 spaces for soft tab
-set shiftwidth=4 " for when <tab> is pressed at beginning of line
+set expandtab
+set tabstop=4
+set softtabstop=4
+set shiftwidth=4
 set termguicolors
 set background=dark
 ]])
@@ -101,7 +105,7 @@ return require('packer').startup(function(use)
     use {
         'wbthomason/packer.nvim',
         config = function ()
-            nmap("<leader>vps", ":PackerSync<cr>")
+            nmap("<leader>", ":PackerSync<cr>")
             nmap("<leader>vpc", ':PackerCompile<cr>:echo "Packages Compiled"<cr>')
         end,
     }
