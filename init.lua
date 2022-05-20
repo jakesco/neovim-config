@@ -67,7 +67,7 @@ function omap(shortcut, command)
 end
 
 -- Keymaps
-nmap("<leader>ve", ":vsplit $MYVIMRC<cr>")
+nmap("<leader>ve", ":edit $MYVIMRC<cr>")
 nmap("<leader>vr", ':source $MYVIMRC<cr>:echo "init.lua reloaded"<cr>')
 
 nmap("<leader>n", ":set relativenumber!<cr>")
@@ -91,6 +91,10 @@ omap("fun", ':<c-u>normal! 0f(hviw<cr>') -- change function name
 -- " Abbreviation to insert current date
 vim.cmd([[iabbrev @@d <C-r>=strftime("%Y-%m-%d")<cr>]])
 
+
+-- " Add fzf to runtimepath
+vim.cmd([[set runtimepath+=/usr/bin/fzf]])
+
 -- Packages
 -- References
 -- https://alpha2phi.medium.com/neovim-for-beginners-plugin-management-59a8253a655f
@@ -105,7 +109,7 @@ return require('packer').startup(function(use)
     use {
         'wbthomason/packer.nvim',
         config = function ()
-            nmap("<leader>", ":PackerSync<cr>")
+            nmap("<leader>vps", ":PackerSync<cr>")
             nmap("<leader>vpc", ':PackerCompile<cr>:echo "Packages Compiled"<cr>')
         end,
     }
@@ -136,6 +140,17 @@ return require('packer').startup(function(use)
     use 'tpope/vim-commentary'
 
     use 'tpope/vim-surround'
+
+    use {
+        'junegunn/fzf.vim',
+        config = function ()
+            nmap("<leader>b", ":Buffers<cr>")
+            nmap("<leader><Space>", ':Files<cr>')
+            nmap("<leader>fr", ':BLines <c-r><c-w><cr>')
+            nmap("<leader>gf", ':GFiles<cr>')
+            nmap("<leader>gs", ':GFiles?<cr>')
+        end,
+    }
 
     if packer_bootstrap then
         require('packer').sync()
