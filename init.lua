@@ -147,6 +147,7 @@ return require('packer').startup(function(use)
             nmap("<leader>b", ":Buffers<cr>")
             nmap("<leader><Space>", ':Files<cr>')
             nmap("<leader>fr", ':BLines <c-r><c-w><cr>')
+            nmap("<leader>rg", ':Rg ')
             nmap("<leader>gf", ':GFiles<cr>')
             nmap("<leader>gs", ':GFiles?<cr>')
         end,
