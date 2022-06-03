@@ -92,9 +92,6 @@ omap("fun", ':<c-u>normal! 0f(hviw<cr>') -- change function name
 vim.cmd([[iabbrev @@d <C-r>=strftime("%Y-%m-%d")<cr>]])
 
 
--- " Add fzf to runtimepath
-vim.cmd([[set runtimepath+=/usr/bin/fzf]])
-
 -- Packages
 -- References
 -- https://alpha2phi.medium.com/neovim-for-beginners-plugin-management-59a8253a655f
@@ -140,6 +137,11 @@ return require('packer').startup(function(use)
     use 'tpope/vim-commentary'
 
     use 'tpope/vim-surround'
+
+    use {
+        'junegunn/fzf',
+        run = 'fzf#install()',
+    }
 
     use {
         'junegunn/fzf.vim',
