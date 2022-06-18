@@ -153,6 +153,13 @@ return require('packer').startup(function(use)
         end,
     }
 
+    use {
+        'neovim/nvim-lspconfig',
+        config = function ()
+            require('lspconfig').clangd.setup{}
+        end,
+    }
+
     if packer_bootstrap then
         require('packer').sync()
     end
