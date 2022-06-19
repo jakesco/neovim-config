@@ -146,17 +146,52 @@ return require('packer').startup(function(use)
         config = function ()
             nmap("<leader>b", ":Buffers<cr>")
             nmap("<leader><Space>", ':Files<cr>')
-            nmap("<leader>fr", ':BLines <c-r><c-w><cr>')
+            nmap("<leader>rr", ':BLines <c-r><c-w><cr>')
             nmap("<leader>rg", ':Rg ')
             nmap("<leader>gf", ':GFiles<cr>')
-            nmap("<leader>gs", ':GFiles?<cr>')
+            nmap("<leader>gr", ':GFiles?<cr>')
         end,
     }
 
     use {
         'neovim/nvim-lspconfig',
         config = function ()
-            require('lspconfig').clangd.setup{}
+            -- Mappings.
+            -- See `:help vim.diagnostic.*` for documentation on any of the below functions
+            nmap('n', '<leader>e', vim.diagnostic.open_float, opts)
+            nmap('n', '[d', vim.diagnostic.goto_prev, opts)
+            nmap('n', ']d', vim.diagnostic.goto_next, opts)
+            nmap('n', '<leader>q', vim.diagnostic.setloclist, opts)
+            
+            -- Use an on_attach function to only map the following keys
+            -- after the language server attaches to the current buffer
+            local on_attach = function(client, bufnr)
+              -- Enable completion triggered by <c-x><c-o>
+              vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+            
+              -- Mappings.
+              -- See `:help vim.lsp.*` for documentation on any of the below functions
+              local bufopts = { noremap=true, silent=true, buffer=bufnr }
+              nmap('n', 'gD', vim.lsp.buf.declaration, bufopts)
+              nmap('n', 'gd', vim.lsp.buf.definition, bufopts)
+              nmap('n', 'K', vim.lsp.buf.hover, bufopts)
+              nmap('n', 'gi', vim.lsp.buf.implementation, bufopts)
+              nmap('n', '<C-k>', vim.lsp.buf.signature_help, bufopts)
+              nmap('n', '<leader>wa', vim.lsp.buf.add_workspace_folder, bufopts)
+              nmap('n', '<leader>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
+              nmap('n', '<leader>wl', function()
+                print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+              end, bufopts)
+              nmap('n', '<leader>D', vim.lsp.buf.type_definition, bufopts)
+              nmap('n', '<leader>rn', vim.lsp.buf.rename, bufopts)
+              nmap('n', '<leader>ca', vim.lsp.buf.code_action, bufopts)
+              nmap('n', 'gr', vim.lsp.buf.references, bufopts)
+              nmap('n', '<leader>f', vim.lsp.buf.formatting, bufopts)
+            end
+
+            require('lspconfig').clangd.setup {
+                on_attach = on_attach,
+            }
         end,
     }
 
