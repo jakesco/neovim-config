@@ -49,15 +49,37 @@ vim.keymap.set('n', '<leader>cr', ':source $MYVIMRC<cr>:echo "init.lua reloaded"
 vim.keymap.set('n', '<leader>cn', ':set relativenumber!<cr>')
 vim.keymap.set('n', '<leader>cs', ':setlocal spell! spelllang=en_us<cr>')
 vim.keymap.set('n', '<leader>y', '"+y')
-vim.keymap.set('n', '<leader>p', '"+p')
+-- vim.keymap.set('n', '<leader>p', '"+p')
 vim.keymap.set('v', '<leader>y', '"+y')
-vim.keymap.set('v', '<leader>p', '"+p')
+-- vim.keymap.set('v', '<leader>p', '"+p')
 vim.keymap.set('n', '<leader>dd', '^D')
 vim.keymap.set('n', '<leader>\\', ':vsp<cr>')
 vim.keymap.set('n', '<leader>-', ':sp<cr>')
 vim.keymap.set('n', '<leader>/', ':nohlsearch<cr> :echo "Search cleared."<cr>')
 vim.keymap.set('n', '<leader>*', ':%s/\\<<c-r><c-w>\\>//g<left><left>', { desc = 'Search & replace word under cursor' })
 vim.keymap.set('o', 'fun', ':<c-u>normal! 0f(hviw<cr>', { desc = 'Change function name' })
+
+vim.keymap.set('n', '<leader>cf', vim.cmd.Ex)
+
+vim.keymap.set('v', "J", ":m '>+1<CR>gv=gv")
+vim.keymap.set('v', "K", ":m '<-2<CR>gv=gv")
+
+vim.keymap.set('n', 'Y', 'yg$')
+vim.keymap.set('n', 'J', 'mzJ`z')
+vim.keymap.set('n', '<C-d>', '<C-d>zz')
+vim.keymap.set('n', '<C-u>', '<C-u>zz')
+vim.keymap.set('n', 'n', 'nzzzv')
+vim.keymap.set('n', 'N', 'nzzzv')
+
+vim.keymap.set('x', '<leader>p', '"_dP')
+
+vim.keymap.set('n', 'Q', '<nop>')
+
+vim.keymap.set('n', '<leader>f', function ()
+    vim.lsp.buf.format()
+end)
+
+-- vim.keymap.set('n', '<leader>x', '<cmd>!chmod +x %<CR>', { silent = true })
 
 -- Abbreviations
 vim.cmd([[iabbrev @@d <C-r>=strftime("%Y-%m-%d")<cr>]]) -- insert current date
