@@ -41,13 +41,17 @@ set shiftwidth=4
 set termguicolors
 set background=dark
 set cursorline
+set nowrap
 ]])
 
 -- Keymaps ---------------------------------------------------------------------------------------
 vim.keymap.set('n', '<leader>ce', ':edit $MYVIMRC<cr>')
 vim.keymap.set('n', '<leader>cr', ':source $MYVIMRC<cr>:echo "init.lua reloaded"<cr>')
+vim.keymap.set('n', '<leader>c/', ':nohlsearch<cr> :echo "Search cleared."<cr>')
 vim.keymap.set('n', '<leader>cn', ':set relativenumber!<cr>')
 vim.keymap.set('n', '<leader>cs', ':setlocal spell! spelllang=en_us<cr>')
+vim.keymap.set('n', '<leader>cf', vim.cmd.Ex)
+vim.keymap.set('n', '<leader>r', ':!<up><cr>', { desc = 'Run last external program' })
 vim.keymap.set('n', '<leader>y', '"+y')
 -- vim.keymap.set('n', '<leader>p', '"+p')
 vim.keymap.set('v', '<leader>y', '"+y')
@@ -55,11 +59,9 @@ vim.keymap.set('v', '<leader>y', '"+y')
 vim.keymap.set('n', '<leader>dd', '^D')
 vim.keymap.set('n', '<leader>\\', ':vsp<cr>')
 vim.keymap.set('n', '<leader>-', ':sp<cr>')
-vim.keymap.set('n', '<leader>/', ':nohlsearch<cr> :echo "Search cleared."<cr>')
 vim.keymap.set('n', '<leader>*', ':%s/\\<<c-r><c-w>\\>//g<left><left>', { desc = 'Search & replace word under cursor' })
 vim.keymap.set('o', 'fun', ':<c-u>normal! 0f(hviw<cr>', { desc = 'Change function name' })
 
-vim.keymap.set('n', '<leader>cf', vim.cmd.Ex)
 
 vim.keymap.set('v', "J", ":m '>+1<CR>gv=gv")
 vim.keymap.set('v', "K", ":m '<-2<CR>gv=gv")
@@ -74,10 +76,6 @@ vim.keymap.set('n', 'N', 'nzzzv')
 vim.keymap.set('x', '<leader>p', '"_dP')
 
 vim.keymap.set('n', 'Q', '<nop>')
-
-vim.keymap.set('n', '<leader>f', function ()
-    vim.lsp.buf.format()
-end)
 
 -- vim.keymap.set('n', '<leader>x', '<cmd>!chmod +x %<CR>', { silent = true })
 
@@ -113,7 +111,7 @@ end
 require('packer').startup(function(use)
     use {
         'wbthomason/packer.nvim',
-        config = function ()
+        config = function()
             vim.keymap.set('n', '<leader>cpc', ':PackerCompile<cr>', { desc = 'Run [P]acker[C]ompile' })
             vim.keymap.set('n', '<leader>cps', ':PackerSync<cr>', { desc = 'Run [P]acker[S]ync' })
         end,
@@ -125,14 +123,14 @@ require('packer').startup(function(use)
 
     use {
         'tpope/vim-fugitive',
-        config = function ()
+        config = function()
             vim.keymap.set('n', '<leader>gs', vim.cmd.Git)
         end,
     }
 
     use {
         'sainnhe/everforest',
-        config = function ()
+        config = function()
             vim.g.everforest_background = 'medium'
             vim.g.everforest_better_performance = 1
             vim.cmd('colorscheme everforest')
@@ -156,7 +154,7 @@ require('packer').startup(function(use)
     use {
         'nvim-treesitter/nvim-treesitter',
         run = ':TSUpdate',
-        config = function ()
+        config = function()
             require('nvim-treesitter.configs').setup {
                 ensure_installed = { "c", "lua", "rust", "vim", "help", "python", "javascript" },
                 sync_install = false,
@@ -174,22 +172,20 @@ require('packer').startup(function(use)
     use {
         'nvim-telescope/telescope.nvim', tag = '0.1.0',
         requires = { 'nvim-lua/plenary.nvim' },
-        config = function ()
+        config = function()
+            require('telescope').setup({
+                defaults = {
+                    layout_strategy = 'vertical'
+                }
+            })
+
             local builtin = require('telescope.builtin')
             vim.keymap.set('n', '<leader><space>', builtin.find_files, { desc = '[S]earch [F]iles' })
             vim.keymap.set('n', '<leader>b', builtin.buffers, { desc = '[ ] Find existing buffers' })
-            vim.keymap.set('n', '<leader>?', builtin.oldfiles, { desc = '[?] Find recently opend files' })
             vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
             vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
             vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
             vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
-            vim.keymap.set('n', '<leader>s/', function()
-                -- You can pass additional configuration to telescope to change theme, layout, etc.
-                builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
-                    winblend = 10,
-                    previewer = false,
-                })
-            end, { desc = '[/] Fuzzily search in current buffer]' })
         end,
     }
 
@@ -199,7 +195,7 @@ require('packer').startup(function(use)
         'nvim-telescope/telescope-fzf-native.nvim',
         run = 'make',
         cond = vim.fn.executable "make" == 1,
-        config = function ()
+        config = function()
             pcall(require('telescope').load_extension, 'fzf')
         end,
     }
@@ -208,25 +204,28 @@ require('packer').startup(function(use)
         'VonHeikemen/lsp-zero.nvim',
         requires = {
             -- LSP Support
-            {'neovim/nvim-lspconfig'},
-            {'williamboman/mason.nvim'},
-            {'williamboman/mason-lspconfig.nvim'},
+            { 'neovim/nvim-lspconfig' },
+            { 'williamboman/mason.nvim' },
+            { 'williamboman/mason-lspconfig.nvim' },
             -- Autocompletion
-            {'hrsh7th/nvim-cmp'},
-            {'hrsh7th/cmp-buffer'},
-            {'hrsh7th/cmp-path'},
-            {'saadparwaiz1/cmp_luasnip'},
-            {'hrsh7th/cmp-nvim-lsp'},
-            {'hrsh7th/cmp-nvim-lua'},
+            { 'hrsh7th/nvim-cmp' },
+            { 'hrsh7th/cmp-buffer' },
+            { 'hrsh7th/cmp-path' },
+            { 'saadparwaiz1/cmp_luasnip' },
+            { 'hrsh7th/cmp-nvim-lsp' },
+            { 'hrsh7th/cmp-nvim-lua' },
             -- Snippets
-            {'L3MON4D3/LuaSnip'},
+            { 'L3MON4D3/LuaSnip' },
             -- Snippet Collection (Optional)
-            {'rafamadriz/friendly-snippets'},
+            { 'rafamadriz/friendly-snippets' },
         },
-        config = function ()
+        config = function()
             local lsp = require('lsp-zero')
             lsp.preset('recommended')
             lsp.setup()
+            vim.keymap.set('n', '<leader>f', function()
+                vim.lsp.buf.format()
+            end)
         end,
     }
 
@@ -252,4 +251,3 @@ vim.api.nvim_create_autocmd('BufWritePost', {
     group = packer_group,
     pattern = vim.fn.expand '$MYVIMRC',
 })
-
