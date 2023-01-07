@@ -13,7 +13,6 @@
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
-
 -- General Settings
 -- vim.g.netrw_banner = 0
 
@@ -31,7 +30,7 @@ set incsearch
 set ignorecase smartcase
 set diffopt+=vertical
 set shortmess+=c
-set signcolumn=number
+set signcolumn=yes
 set breakindent
 set path+=**
 set hidden
@@ -41,6 +40,7 @@ set softtabstop=4
 set shiftwidth=4
 set termguicolors
 set background=dark
+set cursorline
 ]])
 
 -- Keymaps ---------------------------------------------------------------------------------------
@@ -133,9 +133,9 @@ require('packer').startup(function(use)
     use {
         'sainnhe/everforest',
         config = function ()
-            vim.g.everforest_background = 'hard'
+            vim.g.everforest_background = 'medium'
             vim.g.everforest_better_performance = 1
-            vim.cmd([[colorscheme everforest]])
+            vim.cmd('colorscheme everforest')
         end,
     }
 
@@ -163,7 +163,6 @@ require('packer').startup(function(use)
                 auto_install = true,
                 highlight = {
                     enable = true,
-                    disable = { "lua" },
                     additional_vim_regex_highlighting = false,
                 },
             }
@@ -206,22 +205,28 @@ require('packer').startup(function(use)
     }
 
     use {
-        'ThePrimeagen/harpoon',
-        requires = { 'nvim-lua/plenary.nvim' },
+        'VonHeikemen/lsp-zero.nvim',
+        requires = {
+            -- LSP Support
+            {'neovim/nvim-lspconfig'},
+            {'williamboman/mason.nvim'},
+            {'williamboman/mason-lspconfig.nvim'},
+            -- Autocompletion
+            {'hrsh7th/nvim-cmp'},
+            {'hrsh7th/cmp-buffer'},
+            {'hrsh7th/cmp-path'},
+            {'saadparwaiz1/cmp_luasnip'},
+            {'hrsh7th/cmp-nvim-lsp'},
+            {'hrsh7th/cmp-nvim-lua'},
+            -- Snippets
+            {'L3MON4D3/LuaSnip'},
+            -- Snippet Collection (Optional)
+            {'rafamadriz/friendly-snippets'},
+        },
         config = function ()
-            local mark = require("harpoon.mark")
-            local ui = require("harpoon.ui")
-            vim.keymap.set('n', '<leader>ha', mark.add_file)
-            vim.keymap.set('n', '<leader>he', ui.toggle_quick_menu)
-            vim.keymap.set('n', '<C-n>', function() ui.nav_next() end)
-            vim.keymap.set('n', '<C-p>', function() ui.nav_prev() end)
-        end,
-    }
-
-    use {
-        'mbbill/undotree',
-        config = function ()
-            vim.keymap.set('n', '<leader>u', vim.cmd.UndotreeToggle)
+            local lsp = require('lsp-zero')
+            lsp.preset('recommended')
+            lsp.setup()
         end,
     }
 
