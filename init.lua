@@ -80,7 +80,7 @@ vim.keymap.set('n', 'Q', '<nop>')
 -- vim.keymap.set('n', '<leader>x', '<cmd>!chmod +x %<CR>', { silent = true })
 
 -- Abbreviations
-vim.cmd([[iabbrev @@d <C-r>=strftime("%Y-%m-%d")<cr>]]) -- insert current date
+vim.cmd('iabbrev @@d <C-r>=strftime("%Y-%m-%d")<cr>') -- insert current date
 
 -- Trim trailing whitespace
 local global_group = vim.api.nvim_create_augroup("GlobalAuCmds", { clear = true })
@@ -99,12 +99,17 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
 })
 
 -- Packages --------------------------------------------------------------------------------------
-local install_path = vim.fn.stdpath 'data' .. '/site/pack/packer/start/packer.nvim'
+local install_path = vim.fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim'
 local is_bootstrap = false
 if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
     is_bootstrap = true
-    vim.fn.execute('!git clone https://github.com/wbthomason/packer.nvim ' .. install_path)
-    vim.cmd [[packadd packer.nvim]]
+    vim.fn.system({
+        "git",
+        "clone",
+        "https://github.com/wbthomason/packer.nvim",
+        install_path,
+    })
+    vim.cmd('packadd packer.nvim')
 end
 
 -- stylua: ignore start
