@@ -50,7 +50,7 @@ vim.keymap.set('n', '<leader>cr', ':source $MYVIMRC<cr>:echo "init.lua reloaded"
 vim.keymap.set('n', '<leader>c/', ':nohlsearch<cr> :echo "Search cleared."<cr>')
 vim.keymap.set('n', '<leader>cn', ':set relativenumber!<cr>')
 vim.keymap.set('n', '<leader>cs', ':setlocal spell! spelllang=en_us<cr>')
-vim.keymap.set('n', '<leader>cf', vim.cmd.Ex)
+-- vim.keymap.set('n', '<leader>cf', vim.cmd.Ex)
 vim.keymap.set('n', '<leader>r', ':!<up><cr>', { desc = 'Run last external program' })
 vim.keymap.set('n', '<leader>y', '"+y')
 -- vim.keymap.set('n', '<leader>p', '"+p')
@@ -122,13 +122,6 @@ require('packer').startup(function(use)
     use 'tpope/vim-surround'
 
     use {
-        'tpope/vim-fugitive',
-        config = function()
-            vim.keymap.set('n', '<leader>gs', vim.cmd.Git)
-        end,
-    }
-
-    use {
         'sainnhe/everforest',
         config = function()
             vim.g.everforest_background = 'medium'
@@ -170,33 +163,18 @@ require('packer').startup(function(use)
     use 'nvim-treesitter/playground'
 
     use {
-        'nvim-telescope/telescope.nvim', tag = '0.1.0',
-        requires = { 'nvim-lua/plenary.nvim' },
+        'nvim-neo-tree/neo-tree.nvim',
+        branch = 'v2.x',
+        requires = {
+            'nvim-lua/plenary.nvim',
+            'nvim-tree/nvim-web-devicons',
+            'MunifTanjim/nui.nvim',
+        },
         config = function()
-            require('telescope').setup({
-                defaults = {
-                    layout_strategy = 'vertical'
-                }
-            })
-
-            local builtin = require('telescope.builtin')
-            vim.keymap.set('n', '<leader><space>', builtin.find_files, { desc = '[S]earch [F]iles' })
-            vim.keymap.set('n', '<leader>b', builtin.buffers, { desc = '[ ] Find existing buffers' })
-            vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
-            vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
-            vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
-            vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
-        end,
-    }
-
-    use {
-        -- Fuzzy Finder Algorithm which requires local dependencies to be built.
-        -- Only load if `make` is available.
-        'nvim-telescope/telescope-fzf-native.nvim',
-        run = 'make',
-        cond = vim.fn.executable "make" == 1,
-        config = function()
-            pcall(require('telescope').load_extension, 'fzf')
+            vim.cmd('let g:neo_tree_remove_legacy_commands = 1')
+            vim.keymap.set('n', '<leader><space>', ':Neotree filesystem toggle left<cr>')
+            vim.keymap.set('n', '<leader>b', ':Neotree buffers float<cr>')
+            vim.keymap.set('n', '<leader>gs', ':Neotree git_status float<cr>')
         end,
     }
 
