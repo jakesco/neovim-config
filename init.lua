@@ -170,11 +170,15 @@ require('packer').startup(function(use)
             'nvim-tree/nvim-web-devicons',
             'MunifTanjim/nui.nvim',
         },
+
         config = function()
             vim.cmd('let g:neo_tree_remove_legacy_commands = 1')
-            vim.keymap.set('n', '<leader><space>', ':Neotree filesystem toggle left<cr>')
+            vim.keymap.set('n', '<leader><space>', ':Neotree filesystem left<cr>')
             vim.keymap.set('n', '<leader>b', ':Neotree buffers float<cr>')
             vim.keymap.set('n', '<leader>gs', ':Neotree git_status float<cr>')
+            require('neo-tree').setup({
+                close_if_last_window = true,
+            })
         end,
     }
 
