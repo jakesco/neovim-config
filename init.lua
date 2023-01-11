@@ -84,110 +84,96 @@ vim.cmd('iabbrev @@d <C-r>=strftime("%Y-%m-%d")<cr>') -- insert current date
 local global_group = vim.api.nvim_create_augroup("GlobalAuCmds", { clear = true })
 vim.cmd([[
 function! TrimTrailingWhitespace() abort
-  let l:view = winsaveview()
-  keeppatterns %substitute/\m\s\+$//e
-  call winrestview(l:view)
+let l:view = winsaveview()
+keeppatterns %substitute/\m\s\+$//e
+call winrestview(l:view)
 endfunction
 ]])
 
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {
-    pattern = { "*" },
-    callback = "TrimTrailingWhitespace",
-    group = global_group,
+	pattern = { "*" },
+	callback = "TrimTrailingWhitespace",
+	group = global_group,
 })
 
--- Packages --------------------------------------------------------------------------------------
-local install_path = vim.fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim'
-local is_bootstrap = false
-if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
-    is_bootstrap = true
-    vim.fn.system({
-        "git",
-        "clone",
-        "https://github.com/wbthomason/packer.nvim",
-        install_path,
-    })
-    vim.cmd('packadd packer.nvim')
+-- Packages ----------------------------------------------------------
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+	vim.fn.system({
+		"git",
+		"clone",
+		"--filter=blob:none",
+		"https://github.com/folke/lazy.nvim.git",
+		"--branch=stable",
+		lazypath,
+	})
 end
+vim.opt.rtp:prepend(lazypath)
 
--- stylua: ignore start
-require('packer').startup(function(use)
-    use {
-        'wbthomason/packer.nvim',
-        config = function()
-            vim.keymap.set('n', '<leader>cpc', ':PackerCompile<cr>', { desc = 'Run [P]acker[C]ompile' })
-            vim.keymap.set('n', '<leader>cps', ':PackerSync<cr>', { desc = 'Run [P]acker[S]ync' })
-        end,
-    }
-
-    use 'tpope/vim-commentary'
-
-    use 'tpope/vim-surround'
-
-    use {
-        'sainnhe/everforest',
-        config = function()
-            vim.g.everforest_background = 'medium'
-            vim.g.everforest_better_performance = 1
-            vim.cmd('colorscheme everforest')
-        end,
-    }
-
-    use {
-        'nvim-lualine/lualine.nvim',
-        config = function()
-            require('lualine').setup {
-                options = {
-                    icons_enabled = false,
-                    theme = 'auto',
-                    component_separators = '|',
-                    section_separators = '',
-                },
-            }
-        end,
-    }
-
-    use {
-        'nvim-treesitter/nvim-treesitter',
-        run = ':TSUpdate',
-        config = function()
-            require('nvim-treesitter.configs').setup {
-                ensure_installed = { "c", "lua", "rust", "vim", "help", "python", "javascript" },
-                sync_install = false,
-                auto_install = true,
-                highlight = {
-                    enable = true,
-                    additional_vim_regex_highlighting = false,
-                },
-            }
-        end,
-    }
-
-    use 'nvim-treesitter/playground'
-
-    use {
-        'nvim-neo-tree/neo-tree.nvim',
-        branch = 'v2.x',
-        requires = {
-            'nvim-lua/plenary.nvim',
-            'nvim-tree/nvim-web-devicons',
-            'MunifTanjim/nui.nvim',
-        },
-
-        config = function()
-            vim.cmd('let g:neo_tree_remove_legacy_commands = 1')
-            vim.keymap.set('n', '<leader><space>', ':Neotree filesystem left<cr>')
-            vim.keymap.set('n', '<leader>b', ':Neotree buffers float<cr>')
-            vim.keymap.set('n', '<leader>gs', ':Neotree git_status float<cr>')
-            require('neo-tree').setup({
-                close_if_last_window = true,
-            })
-        end,
-    }
-
-    use {
+require("lazy").setup({
+	'tpope/vim-commentary',
+	'tpope/vim-surround',
+	{
+		"catppuccin/nvim",
+		name = "catppuccin",
+		lazy = false,
+		priority = 1000,
+		config = function()
+			vim.cmd.colorscheme('catppuccin-frappe')
+		end,
+	},
+	{
+		'nvim-lualine/lualine.nvim',
+		lazy = false,
+		priority = 900,
+		opts = {
+			options = {
+				icons_enabled = false,
+				theme = 'auto',
+				component_separators = '|',
+				section_separators = '',
+			},
+		},
+	},
+	{
+		'nvim-treesitter/nvim-treesitter',
+		build = ':TSUpdate',
+		config = function()
+			require('nvim-treesitter.configs').setup({
+				ensure_installed = { "c", "lua", "rust", "vim", "help", "python", "javascript" },
+				sync_install = false,
+				auto_install = true,
+				highlight = {
+					enable = true,
+					additional_vim_regex_highlighting = false,
+				},
+			})
+		end,
+	},
+	'nvim-treesitter/playground',
+	{
+		'nvim-neo-tree/neo-tree.nvim',
+		branch = 'v2.x',
+		dependencies = {
+			'nvim-lua/plenary.nvim',
+			'nvim-tree/nvim-web-devicons',
+			'MunifTanjim/nui.nvim',
+		},
+		keys = {
+			{ "<leader><space>", "<cmd>Neotree filesystem left<cr>", desc = "Toggle NeoTree" },
+			{ "<leader>b", "<cmd>Neotree buffers float<cr>", desc = "Toggle NeoTree" },
+			{ "<leader>gs", "<cmd>Neotree git_status float<cr>", desc = "Toggle NeoTree" },
+		},
+		config = function()
+			vim.cmd('let g:neo_tree_remove_legacy_commands = 1')
+			require('neo-tree').setup({
+				close_if_last_window = true,
+			})
+		end,
+	},
+    {
         'VonHeikemen/lsp-zero.nvim',
-        requires = {
+        dependencies = {
             -- LSP Support
             { 'neovim/nvim-lspconfig' },
             { 'williamboman/mason.nvim' },
@@ -213,26 +199,4 @@ require('packer').startup(function(use)
             end)
         end,
     }
-
-    if is_bootstrap then
-        require('packer').sync()
-    end
-end)
--- stylua: ignore end
-
-if is_bootstrap then
-    print '=================================='
-    print '    Plugins are being installed'
-    print '    Wait until Packer completes,'
-    print '       then restart nvim'
-    print '=================================='
-    return
-end
-
--- Automatically source and re-compile packer whenever you save this init.lua
-local packer_group = vim.api.nvim_create_augroup('Packer', { clear = true })
-vim.api.nvim_create_autocmd('BufWritePost', {
-    command = 'source <afile> | PackerCompile',
-    group = packer_group,
-    pattern = vim.fn.expand '$MYVIMRC',
 })
