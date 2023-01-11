@@ -10,9 +10,9 @@
 
 -- General Settings -----------------------------------------------------------
 local set = vim.opt
--- vim.g.netrw_banner = 0
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
+-- vim.g.netrw_banner = 0
 
 set.background = 'dark'
 set.breakindent = true
@@ -50,6 +50,7 @@ mapkey('n', '<leader>cs', ':setlocal spell! spelllang=en_us<cr>', { desc = 'Togg
 mapkey('n', '<leader>cp', ':Lazy<cr>', { desc = 'Open Lazy' })
 mapkey('n', '<leader>cf', vim.cmd.Ex, { desc = 'Open netrw' })
 mapkey('x', '<leader>cv', '"_dP', { desc = 'Paste over selection without replacing buffer' })
+mapkey('n', '<leader>cx', '<cmd>!chmod +x %<CR>', { silent = true }, { desc = 'Set exec flag on file' })
 mapkey('n', '<leader>c\\', ':vsp<cr>')
 mapkey('n', '<leader>c-', ':sp<cr>')
 mapkey('n', '<leader>r', ':!<up><cr>', { desc = 'Run last external program' })
@@ -69,7 +70,6 @@ mapkey('n', '<C-u>', '<C-u>zz')
 mapkey('n', 'n', 'nzzzv')
 mapkey('n', 'N', 'nzzzv')
 mapkey('n', 'Q', '<nop>')
--- vim.keymap.set('n', '<leader>x', '<cmd>!chmod +x %<CR>', { silent = true })
 
 
 -- Abbreviations
