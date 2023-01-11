@@ -200,7 +200,7 @@ require("lazy").setup({
             local lsp = require('lsp-zero')
             lsp.preset('recommended')
             lsp.setup()
-            keymap('n', '<leader>f', function()
+            mapkey('n', '<leader>f', function()
                 vim.lsp.buf.format()
             end)
         end,
