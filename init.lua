@@ -8,95 +8,90 @@
 -- ====================================
 -- Inspired by https://github.com/nvim-lua/kickstart.nvim
 
+-- General Settings -----------------------------------------------------------
+local set = vim.opt
+-- vim.g.netrw_banner = 0
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
--- General Settings vim.g.netrw_banner = 0
-vim.cmd([[
-set mouse=a
-set number relativenumber
-set completeopt=menu,menuone,noselect
-set linebreak
-set scrolloff=8
-set sidescrolloff=8
-set splitbelow splitright
-set iskeyword+=-
-set inccommand=nosplit
-set incsearch
-set ignorecase smartcase
-set diffopt+=vertical
-set shortmess+=c
-set signcolumn=yes
-set breakindent
-set path+=**
-set hidden
-set expandtab
-set tabstop=4
-set softtabstop=4
-set shiftwidth=4
-set termguicolors
-set background=dark
-set cursorline
-set nowrap
-]])
-
--- Keymaps ---------------------------------------------------------------------------------------
-keymap = vim.keymap.set
-keymap('n', '<leader>ce', ':edit $MYVIMRC<cr>')
-keymap('n', '<leader>cr', ':source $MYVIMRC<cr>:echo "init.lua reloaded"<cr>')
-keymap('n', '<leader>c/', ':nohlsearch<cr> :echo "Search cleared."<cr>')
-keymap('n', '<leader>cn', ':set relativenumber!<cr>')
-keymap('n', '<leader>cs', ':setlocal spell! spelllang=en_us<cr>')
--- map('n', '<leader>cf', vim.cmd.Ex)
-keymap('n', '<leader>r', ':!<up><cr>', { desc = 'Run last external program' })
-keymap('n', '<leader>y', '"+y')
--- map('n', '<leader>p', '"+p')
-keymap('v', '<leader>y', '"+y')
--- map('v', '<leader>p', '"+p')
-keymap('n', '<leader>dd', '^D')
-keymap('n', '<leader>\\', ':vsp<cr>')
-keymap('n', '<leader>-', ':sp<cr>')
-keymap('n', '<leader>*', ':%s/\\<<c-r><c-w>\\>//g<left><left>', { desc = 'Search & replace word under cursor' })
-keymap('o', 'fun', ':<c-u>normal! 0f(hviw<cr>', { desc = 'Change function name' })
+set.background = 'dark'
+set.breakindent = true
+set.completeopt:append({'menu', 'menuone', 'noselect'})
+set.cursorline = true
+set.diffopt:append('vertical')
+set.expandtab = true
+set.hidden = true
+set.ignorecase = true
+set.inccommand = 'nosplit'
+set.incsearch = true
+set.mouse = 'a'
+set.number = true
+set.linebreak = true
+set.path:append('**')
+set.relativenumber = true
+set.scrolloff = 8
+set.shiftwidth = 4
+set.shortmess:append('c')
+set.sidescrolloff = 8
+set.signcolumn = 'yes'
+set.smartcase = true
+set.softtabstop = 4
+set.tabstop = 4
+set.termguicolors = true
+set.wrap = false
 
 
-keymap('v', "J", ":m '>+1<CR>gv=gv")
-keymap('v', "K", ":m '<-2<CR>gv=gv")
-
-keymap('n', 'Y', 'yg$')
-keymap('n', 'J', 'mzJ`z')
-keymap('n', '<C-d>', '<C-d>zz')
-keymap('n', '<C-u>', '<C-u>zz')
-keymap('n', 'n', 'nzzzv')
-keymap('n', 'N', 'nzzzv')
-
-keymap('x', '<leader>p', '"_dP')
-
-keymap('n', 'Q', '<nop>')
-
+-- Keymaps --------------------------------------------------------------------
+local mapkey = vim.keymap.set
+mapkey('n', '<leader>ce', ':edit $MYVIMRC<cr>', { desc = 'Edit init.lua' })
+mapkey('n', '<leader>c/', ':nohlsearch<cr>', { desc = 'Clear search highlight' })
+mapkey('n', '<leader>cn', ':set relativenumber!<cr>', { desc = 'Toggle relative line numbers' })
+mapkey('n', '<leader>cs', ':setlocal spell! spelllang=en_us<cr>', { desc = 'Toggle spellcheck' })
+mapkey('n', '<leader>cp', ':Lazy<cr>', { desc = 'Open Lazy' })
+mapkey('n', '<leader>cf', vim.cmd.Ex, { desc = 'Open netrw' })
+mapkey('x', '<leader>cv', '"_dP', { desc = 'Paste over selection without replacing buffer' })
+mapkey('n', '<leader>c\\', ':vsp<cr>')
+mapkey('n', '<leader>c-', ':sp<cr>')
+mapkey('n', '<leader>r', ':!<up><cr>', { desc = 'Run last external program' })
+mapkey('n', '<leader>y', '"+y')
+mapkey('n', '<leader>p', '"+p')
+mapkey('v', '<leader>y', '"+y')
+mapkey('v', '<leader>p', '"+p')
+mapkey('n', '<leader>dd', '^D')
+mapkey('n', '<leader>*', ':%s/\\<<c-r><c-w>\\>//g<left><left>', { desc = 'Search & replace word under cursor' })
+mapkey('o', 'fun', ':<c-u>normal! 0f(hviw<cr>', { desc = 'Change function name' })
+mapkey('v', "J", ":m '>+1<CR>gv=gv")
+mapkey('v', "K", ":m '<-2<CR>gv=gv")
+mapkey('n', 'Y', 'yg$')
+mapkey('n', 'J', 'mzJ`z')
+mapkey('n', '<C-d>', '<C-d>zz')
+mapkey('n', '<C-u>', '<C-u>zz')
+mapkey('n', 'n', 'nzzzv')
+mapkey('n', 'N', 'nzzzv')
+mapkey('n', 'Q', '<nop>')
 -- vim.keymap.set('n', '<leader>x', '<cmd>!chmod +x %<CR>', { silent = true })
+
 
 -- Abbreviations
 vim.cmd('iabbrev @@d <C-r>=strftime("%Y-%m-%d")<cr>') -- insert current date
 
--- Trim trailing whitespace
-local global_group = vim.api.nvim_create_augroup("GlobalAuCmds", { clear = true })
-vim.cmd([[
-function! TrimTrailingWhitespace() abort
-let l:view = winsaveview()
-keeppatterns %substitute/\m\s\+$//e
-call winrestview(l:view)
-endfunction
-]])
 
+-- Auto-commands --------------------------------------------------------------
+local global_group = vim.api.nvim_create_augroup("GlobalAuCmds", { clear = true })
+
+-- Trim trailing whitespace
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {
     pattern = { "*" },
-    callback = "TrimTrailingWhitespace",
+    callback = function()
+        local winpos = vim.fn.winsaveview()
+        vim.cmd([[%substitute/\m\s\+$//e]])
+        vim.fn.winrestview(winpos)
+    end,
     group = global_group,
 })
 
 
--- Packages ----------------------------------------------------------
+-- Packages -------------------------------------------------------------------
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
     vim.fn.system({
@@ -119,6 +114,9 @@ require("lazy").setup({
         lazy = false,
         priority = 100,
         config = function()
+            require('catppuccin').setup({
+                no_italic = true,
+            })
             vim.cmd.colorscheme('catppuccin-frappe')
         end,
     },
