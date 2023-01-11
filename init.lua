@@ -84,40 +84,119 @@ vim.cmd('iabbrev @@d <C-r>=strftime("%Y-%m-%d")<cr>') -- insert current date
 local global_group = vim.api.nvim_create_augroup("GlobalAuCmds", { clear = true })
 vim.cmd([[
 function! TrimTrailingWhitespace() abort
-  let l:view = winsaveview()
-  keeppatterns %substitute/\m\s\+$//e
-  call winrestview(l:view)
+let l:view = winsaveview()
+keeppatterns %substitute/\m\s\+$//e
+call winrestview(l:view)
 endfunction
 ]])
 
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {
-    pattern = { "*" },
-    callback = "TrimTrailingWhitespace",
-    group = global_group,
+	pattern = { "*" },
+	callback = "TrimTrailingWhitespace",
+	group = global_group,
 })
 
 -- Packages ----------------------------------------------------------
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
-  vim.fn.system({
-    "git",
-    "clone",
-    "--filter=blob:none",
-    "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable",
-    lazypath,
-  })
+	vim.fn.system({
+		"git",
+		"clone",
+		"--filter=blob:none",
+		"https://github.com/folke/lazy.nvim.git",
+		"--branch=stable",
+		lazypath,
+	})
 end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
+	'tpope/vim-commentary',
+	'tpope/vim-surround',
+	{
+		"catppuccin/nvim",
+		name = "catppuccin",
+		lazy = false,
+		priority = 1000,
+		config = function()
+			vim.cmd.colorscheme('catppuccin-frappe')
+		end,
+	},
+	{
+		'nvim-lualine/lualine.nvim',
+		lazy = false,
+		priority = 900,
+		opts = {
+			options = {
+				icons_enabled = false,
+				theme = 'auto',
+				component_separators = '|',
+				section_separators = '',
+			},
+		},
+	},
+	{
+		'nvim-treesitter/nvim-treesitter',
+		build = ':TSUpdate',
+		config = function()
+			require('nvim-treesitter.configs').setup({
+				ensure_installed = { "c", "lua", "rust", "vim", "help", "python", "javascript" },
+				sync_install = false,
+				auto_install = true,
+				highlight = {
+					enable = true,
+					additional_vim_regex_highlighting = false,
+				},
+			})
+		end,
+	},
+	'nvim-treesitter/playground',
+	{
+		'nvim-neo-tree/neo-tree.nvim',
+		branch = 'v2.x',
+		dependencies = {
+			'nvim-lua/plenary.nvim',
+			'nvim-tree/nvim-web-devicons',
+			'MunifTanjim/nui.nvim',
+		},
+		keys = {
+			{ "<leader><space>", "<cmd>Neotree filesystem left<cr>", desc = "Toggle NeoTree" },
+			{ "<leader>b", "<cmd>Neotree buffers float<cr>", desc = "Toggle NeoTree" },
+			{ "<leader>gs", "<cmd>Neotree git_status float<cr>", desc = "Toggle NeoTree" },
+		},
+		config = function()
+			vim.cmd('let g:neo_tree_remove_legacy_commands = 1')
+			require('neo-tree').setup({
+				close_if_last_window = true,
+			})
+		end,
+	},
     {
-        "catppuccin/nvim",
-        name = "catppuccin",
-        lazy = false,
-        priority = 1000,
+        'VonHeikemen/lsp-zero.nvim',
+        dependencies = {
+            -- LSP Support
+            { 'neovim/nvim-lspconfig' },
+            { 'williamboman/mason.nvim' },
+            { 'williamboman/mason-lspconfig.nvim' },
+            -- Autocompletion
+            { 'hrsh7th/nvim-cmp' },
+            { 'hrsh7th/cmp-buffer' },
+            { 'hrsh7th/cmp-path' },
+            { 'saadparwaiz1/cmp_luasnip' },
+            { 'hrsh7th/cmp-nvim-lsp' },
+            { 'hrsh7th/cmp-nvim-lua' },
+            -- Snippets
+            { 'L3MON4D3/LuaSnip' },
+            -- Snippet Collection (Optional)
+            { 'rafamadriz/friendly-snippets' },
+        },
         config = function()
-            vim.cmd.colorscheme('catppuccin-frappe')
+            local lsp = require('lsp-zero')
+            lsp.preset('recommended')
+            lsp.setup()
+            vim.keymap.set('n', '<leader>f', function()
+                vim.lsp.buf.format()
+            end)
         end,
-    },
+    }
 })
