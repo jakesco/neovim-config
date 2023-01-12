@@ -51,7 +51,7 @@ mapkey('n', '<leader>c/', ':nohlsearch<cr>', { desc = 'Clear search highlight' }
 mapkey('n', '<leader>cn', ':set relativenumber!<cr>', { desc = 'Toggle relative line numbers' })
 mapkey('n', '<leader>cs', ':setlocal spell! spelllang=en_us<cr>', { desc = 'Toggle spellcheck' })
 mapkey('n', '<leader>cp', ':Lazy<cr>', { desc = 'Open Lazy' })
-mapkey('n', '<leader>cf', vim.cmd.Ex, { desc = 'Open netrw' })
+-- mapkey('n', '<leader>cf', vim.cmd.Ex, { desc = 'Open netrw' })
 mapkey('x', '<leader>cv', '"_dP', { desc = 'Paste over selection without replacing buffer' })
 mapkey('n', '<leader>cx', '<cmd>!chmod +x %<CR>', { silent = true }, { desc = 'Set exec flag on file' })
 mapkey('n', '<leader>c\\', ':vsp<cr>')
@@ -146,7 +146,18 @@ require("lazy").setup({
         build = ':TSUpdate',
         config = function()
             require('nvim-treesitter.configs').setup({
-                ensure_installed = { "c", "lua", "rust", "vim", "help", "python", "javascript" },
+                ensure_installed = {
+                    "c",
+                    "lua",
+                    "rust",
+                    "vim",
+                    "help",
+                    "python",
+                    "javascript",
+                    "json",
+                    "yaml",
+                    "toml",
+                },
                 sync_install = false,
                 auto_install = true,
                 highlight = {
@@ -158,6 +169,34 @@ require("lazy").setup({
     },
     'nvim-treesitter/playground',
     {
+        'nvim-telescope/telescope.nvim',
+        tag = '0.1.0',
+        dependencies = {
+            'nvim-lua/plenary.nvim',
+        },
+        config = function()
+            require('telescope').setup({
+                defaults = {
+                    layout_strategy = 'vertical'
+                }
+            })
+            local builtin = require('telescope.builtin')
+            mapkey('n', '<leader><space>', builtin.find_files, { desc = 'Find files' })
+            mapkey('n', '<leader>b', builtin.buffers, { desc = '[ ] Find existing buffers' })
+            mapkey('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
+            mapkey('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
+            mapkey('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
+        end,
+    },
+    {
+        'nvim-telescope/telescope-fzf-native.nvim',
+        cond = vim.fn.executable('make') == 1,
+        build = 'make',
+        config = function()
+            require('telescope').load_extension('fzf')
+        end,
+    },
+    {
         'nvim-neo-tree/neo-tree.nvim',
         branch = 'v2.x',
         dependencies = {
@@ -166,9 +205,7 @@ require("lazy").setup({
             'MunifTanjim/nui.nvim',
         },
         keys = {
-            { "<leader><space>", "<cmd>Neotree filesystem left<cr>", desc = "Toggle NeoTree" },
-            { "<leader>b", "<cmd>Neotree buffers float<cr>", desc = "Toggle NeoTree" },
-            { "<leader>gs", "<cmd>Neotree git_status float<cr>", desc = "Toggle NeoTree" },
+            { "<leader>cf", "<cmd>Neotree filesystem left<cr>", desc = "Toggle NeoTree" },
         },
         config = function()
             vim.cmd('let g:neo_tree_remove_legacy_commands = 1')
@@ -199,6 +236,7 @@ require("lazy").setup({
         config = function()
             local lsp = require('lsp-zero')
             lsp.preset('recommended')
+            lsp.nvim_workspace()
             lsp.setup()
             mapkey('n', '<leader>f', function()
                 vim.lsp.buf.format()
