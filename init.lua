@@ -25,9 +25,9 @@ set.hidden = true
 set.ignorecase = true
 set.inccommand = 'nosplit'
 set.incsearch = true
+set.linebreak = true
 set.mouse = 'a'
 set.number = true
-set.linebreak = true
 set.path:append('**')
 set.relativenumber = true
 set.scrolloff = 8
@@ -50,10 +50,11 @@ mapkey('n', '<leader>ce', ':edit $MYVIMRC<cr>', { desc = 'Edit init.lua' })
 mapkey('n', '<leader>c/', ':nohlsearch<cr>', { desc = 'Clear search highlight' })
 mapkey('n', '<leader>cn', ':set relativenumber!<cr>', { desc = 'Toggle relative line numbers' })
 mapkey('n', '<leader>cs', ':setlocal spell! spelllang=en_us<cr>', { desc = 'Toggle spellcheck' })
+mapkey('v', '<leader>cs', ':sort<cr>', { desc = 'Sort selection', silent = true })
 mapkey('n', '<leader>cp', ':Lazy<cr>', { desc = 'Open Lazy' })
 -- mapkey('n', '<leader>cf', vim.cmd.Ex, { desc = 'Open netrw' })
 mapkey('x', '<leader>cv', '"_dP', { desc = 'Paste over selection without replacing buffer' })
-mapkey('n', '<leader>cx', '<cmd>!chmod +x %<CR>', { silent = true }, { desc = 'Set exec flag on file' })
+mapkey('n', '<leader>cx', '<cmd>!chmod +x %<CR>', { desc = 'Set exec flag on file' })
 mapkey('n', '<leader>c\\', ':vsp<cr>')
 mapkey('n', '<leader>c-', ':sp<cr>')
 mapkey('n', '<leader>r', ':!<up><cr>', { desc = 'Run last external program' })
@@ -148,15 +149,15 @@ require("lazy").setup({
             require('nvim-treesitter.configs').setup({
                 ensure_installed = {
                     "c",
-                    "lua",
-                    "rust",
-                    "vim",
                     "help",
-                    "python",
                     "javascript",
                     "json",
-                    "yaml",
+                    "lua",
+                    "python",
+                    "rust",
                     "toml",
+                    "vim",
+                    "yaml",
                 },
                 sync_install = false,
                 auto_install = true,
@@ -200,9 +201,9 @@ require("lazy").setup({
         'nvim-neo-tree/neo-tree.nvim',
         branch = 'v2.x',
         dependencies = {
+            'MunifTanjim/nui.nvim',
             'nvim-lua/plenary.nvim',
             'nvim-tree/nvim-web-devicons',
-            'MunifTanjim/nui.nvim',
         },
         keys = {
             { "<leader>cf", "<cmd>Neotree filesystem left<cr>", desc = "Toggle NeoTree" },
@@ -218,20 +219,19 @@ require("lazy").setup({
         'VonHeikemen/lsp-zero.nvim',
         dependencies = {
             -- LSP Support
-            { 'neovim/nvim-lspconfig' },
-            { 'williamboman/mason.nvim' },
-            { 'williamboman/mason-lspconfig.nvim' },
+            'neovim/nvim-lspconfig',
+            'williamboman/mason-lspconfig.nvim',
+            'williamboman/mason.nvim',
             -- Autocompletion
-            { 'hrsh7th/nvim-cmp' },
-            { 'hrsh7th/cmp-buffer' },
-            { 'hrsh7th/cmp-path' },
-            { 'saadparwaiz1/cmp_luasnip' },
-            { 'hrsh7th/cmp-nvim-lsp' },
-            { 'hrsh7th/cmp-nvim-lua' },
+            'hrsh7th/cmp-buffer',
+            'hrsh7th/cmp-nvim-lsp',
+            'hrsh7th/cmp-nvim-lua',
+            'hrsh7th/cmp-path',
+            'hrsh7th/nvim-cmp',
+            'saadparwaiz1/cmp_luasnip',
             -- Snippets
-            { 'L3MON4D3/LuaSnip' },
-            -- Snippet Collection (Optional)
-            { 'rafamadriz/friendly-snippets' },
+            'L3MON4D3/LuaSnip',
+            'rafamadriz/friendly-snippets',
         },
         config = function()
             local lsp = require('lsp-zero')
