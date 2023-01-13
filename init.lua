@@ -112,7 +112,7 @@ if not vim.loop.fs_stat(lazypath) then
         lazypath,
     })
 end
-vim.opt.rtp:prepend(lazypath)
+set.rtp:prepend(lazypath)
 
 require("lazy").setup({
     'tpope/vim-commentary',
@@ -154,6 +154,7 @@ require("lazy").setup({
                     "javascript",
                     "json",
                     "lua",
+                    "markdown",
                     "python",
                     "rust",
                     "toml",
