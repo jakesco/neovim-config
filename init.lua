@@ -117,6 +117,7 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
     'tpope/vim-commentary',
     'tpope/vim-surround',
+    'justinmk/vim-sneak',
     {
         'catppuccin/nvim',
         name = 'catppuccin',
@@ -213,6 +214,23 @@ require("lazy").setup({
             require('neo-tree').setup({
                 close_if_last_window = true,
             })
+        end,
+    },
+    {
+        'ThePrimeagen/harpoon',
+        dependencies = {
+            'nvim-lua/plenary.nvim',
+        },
+        config = function()
+            require('telescope').load_extension('harpoon')
+            local mark = require('harpoon.mark')
+            local ui = require('harpoon.ui')
+            mapkey('n', "<leader>hm", mark.add_file, { desc = "Harpoon current file" })
+            mapkey('n', "<leader>hh", ui.toggle_quick_menu, { desc = "Toggle harpoon quick menu" })
+            mapkey('n', "<leader>j", function() ui.nav_file(1) end)
+            mapkey('n', "<leader>k", function() ui.nav_file(2) end)
+            mapkey('n', "<leader>l", function() ui.nav_file(3) end)
+            mapkey('n', "<leader>;", function() ui.nav_file(4) end)
         end,
     },
     {
