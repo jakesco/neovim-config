@@ -172,32 +172,22 @@ require("lazy").setup({
     },
     'nvim-treesitter/playground',
     {
-        'nvim-telescope/telescope.nvim',
-        tag = '0.1.0',
+        'ibhagwan/fzf-lua',
+        lazy = false,
         dependencies = {
-            'nvim-lua/plenary.nvim',
+            'nvim-tree/nvim-web-devicons',
         },
-        config = function()
-            require('telescope').setup({
-                defaults = {
-                    layout_strategy = 'vertical'
-                }
-            })
-            local builtin = require('telescope.builtin')
-            mapkey('n', '<leader><space>', builtin.find_files, { desc = 'Find files' })
-            mapkey('n', '<leader>b', builtin.buffers, { desc = '[ ] Find existing buffers' })
-            mapkey('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
-            mapkey('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
-            mapkey('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
-        end,
-    },
-    {
-        'nvim-telescope/telescope-fzf-native.nvim',
-        cond = vim.fn.executable('make') == 1,
-        build = 'make',
-        config = function()
-            require('telescope').load_extension('fzf')
-        end,
+        keys = {
+            { "<leader><space>", "<cmd>FzfLua files<cr>" },
+            { "<leader>b", "<cmd>FzfLua buffers<cr>" },
+        },
+        opts = {
+            winopts = {
+                preview = {
+                    hidden = 'hidden',
+                },
+            },
+        },
     },
     {
         'nvim-neo-tree/neo-tree.nvim',
@@ -223,7 +213,6 @@ require("lazy").setup({
             'nvim-lua/plenary.nvim',
         },
         config = function()
-            require('telescope').load_extension('harpoon')
             local mark = require('harpoon.mark')
             local ui = require('harpoon.ui')
             mapkey('n', "<leader>hm", mark.add_file, { desc = "Harpoon current file" })
