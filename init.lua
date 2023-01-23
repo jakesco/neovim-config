@@ -144,6 +144,24 @@ require("lazy").setup({
         },
     },
     {
+        'ibhagwan/fzf-lua',
+        lazy = false,
+        dependencies = {
+            'nvim-tree/nvim-web-devicons',
+        },
+        keys = {
+            { "<leader><space>", "<cmd>FzfLua files<cr>" },
+            { "<leader>b", "<cmd>FzfLua buffers<cr>" },
+        },
+        opts = {
+            winopts = {
+                preview = {
+                    hidden = 'hidden',
+                },
+            },
+        },
+    },
+    {
         'nvim-treesitter/nvim-treesitter',
         build = ':TSUpdate',
         config = function()
@@ -172,22 +190,20 @@ require("lazy").setup({
     },
     'nvim-treesitter/playground',
     {
-        'ibhagwan/fzf-lua',
-        lazy = false,
+        'ThePrimeagen/harpoon',
         dependencies = {
-            'nvim-tree/nvim-web-devicons',
+            'nvim-lua/plenary.nvim',
         },
-        keys = {
-            { "<leader><space>", "<cmd>FzfLua files<cr>" },
-            { "<leader>b", "<cmd>FzfLua buffers<cr>" },
-        },
-        opts = {
-            winopts = {
-                preview = {
-                    hidden = 'hidden',
-                },
-            },
-        },
+        config = function()
+            local mark = require('harpoon.mark')
+            local ui = require('harpoon.ui')
+            mapkey('n', "<leader>hm", mark.add_file, { desc = "Harpoon current file" })
+            mapkey('n', "<leader>hh", ui.toggle_quick_menu, { desc = "Toggle harpoon quick menu" })
+            mapkey('n', "<leader>j", function() ui.nav_file(1) end)
+            mapkey('n', "<leader>k", function() ui.nav_file(2) end)
+            mapkey('n', "<leader>l", function() ui.nav_file(3) end)
+            mapkey('n', "<leader>;", function() ui.nav_file(4) end)
+        end,
     },
     {
         'nvim-neo-tree/neo-tree.nvim',
@@ -205,22 +221,6 @@ require("lazy").setup({
             require('neo-tree').setup({
                 close_if_last_window = true,
             })
-        end,
-    },
-    {
-        'ThePrimeagen/harpoon',
-        dependencies = {
-            'nvim-lua/plenary.nvim',
-        },
-        config = function()
-            local mark = require('harpoon.mark')
-            local ui = require('harpoon.ui')
-            mapkey('n', "<leader>hm", mark.add_file, { desc = "Harpoon current file" })
-            mapkey('n', "<leader>hh", ui.toggle_quick_menu, { desc = "Toggle harpoon quick menu" })
-            mapkey('n', "<leader>j", function() ui.nav_file(1) end)
-            mapkey('n', "<leader>k", function() ui.nav_file(2) end)
-            mapkey('n', "<leader>l", function() ui.nav_file(3) end)
-            mapkey('n', "<leader>;", function() ui.nav_file(4) end)
         end,
     },
     {
