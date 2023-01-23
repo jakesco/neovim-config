@@ -152,6 +152,9 @@ require("lazy").setup({
         keys = {
             { "<leader><space>", "<cmd>FzfLua files<cr>" },
             { "<leader>b", "<cmd>FzfLua buffers<cr>" },
+            { "<leader>fh", "<cmd>FzfLua help_tags<cr>" },
+            { "<leader>fa", "<cmd>FzfLua lsp_code_actions<cr>" },
+            { "<leader>fd", "<cmd>FzfLua diagnostics_document<cr>" },
         },
         opts = {
             winopts = {
@@ -246,7 +249,7 @@ require("lazy").setup({
             lsp.preset('recommended')
             lsp.nvim_workspace()
             lsp.setup()
-            mapkey('n', '<leader>f', function()
+            mapkey('n', '<leader>ff', function()
                 vim.lsp.buf.format()
             end)
         end,
