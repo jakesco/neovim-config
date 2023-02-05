@@ -250,5 +250,11 @@ require("lazy").setup({
                 vim.lsp.buf.format()
             end)
         end,
-    }
+    },
+    {
+        'wuelnerdotexe/vim-astro',
+        config = function()
+            vim.g.astro_typescript = 'enable'
+        end,
+    },
 })
