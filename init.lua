@@ -119,6 +119,12 @@ require("lazy").setup({
     'tpope/vim-surround',
     'justinmk/vim-sneak',
     {
+        'lewis6991/gitsigns.nvim',
+        config = function()
+            require('gitsigns').setup()
+        end,
+    },
+    {
         'catppuccin/nvim',
         name = 'catppuccin',
         lazy = false,
