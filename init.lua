@@ -119,24 +119,6 @@ require("lazy").setup({
     'tpope/vim-surround',
     'justinmk/vim-sneak',
     {
-        'lewis6991/gitsigns.nvim',
-        config = function()
-            require('gitsigns').setup()
-        end,
-    },
-    {
-        'catppuccin/nvim',
-        name = 'catppuccin',
-        lazy = false,
-        priority = 100,
-        config = function()
-            require('catppuccin').setup({
-                no_italic = true,
-            })
-            vim.cmd.colorscheme('catppuccin-frappe')
-        end,
-    },
-    {
         'nvim-lualine/lualine.nvim',
         lazy = false,
         priority = 90,
@@ -150,121 +132,9 @@ require("lazy").setup({
         },
     },
     {
-        'ibhagwan/fzf-lua',
-        lazy = false,
-        dependencies = {
-            'nvim-tree/nvim-web-devicons',
-        },
-        keys = {
-            { "<leader><space>", "<cmd>FzfLua files<cr>" },
-            { "<leader>b", "<cmd>FzfLua buffers<cr>" },
-            { "<leader>fh", "<cmd>FzfLua help_tags<cr>" },
-            { "<leader>fa", "<cmd>FzfLua lsp_code_actions<cr>" },
-            { "<leader>fd", "<cmd>FzfLua diagnostics_document<cr>" },
-        },
-        opts = {
-            winopts = {
-                preview = {
-                    hidden = 'hidden',
-                },
-            },
-        },
-    },
-    {
-        'nvim-treesitter/nvim-treesitter',
-        build = ':TSUpdate',
+        'samueljoli/hurl.nvim',
         config = function()
-            require('nvim-treesitter.configs').setup({
-                ensure_installed = {
-                    "c",
-                    "help",
-                    "javascript",
-                    "json",
-                    "lua",
-                    "markdown",
-                    "python",
-                    "rust",
-                    "toml",
-                    "vim",
-                    "yaml",
-                },
-                sync_install = false,
-                auto_install = true,
-                highlight = {
-                    enable = true,
-                    additional_vim_regex_highlighting = false,
-                },
-            })
-        end,
-    },
-    'nvim-treesitter/playground',
-    {
-        'ThePrimeagen/harpoon',
-        dependencies = {
-            'nvim-lua/plenary.nvim',
-        },
-        config = function()
-            local mark = require('harpoon.mark')
-            local ui = require('harpoon.ui')
-            mapkey('n', "<leader>hm", mark.add_file, { desc = "Harpoon current file" })
-            mapkey('n', "<leader>hh", ui.toggle_quick_menu, { desc = "Toggle harpoon quick menu" })
-            mapkey('n', "<leader>j", function() ui.nav_file(1) end)
-            mapkey('n', "<leader>k", function() ui.nav_file(2) end)
-            mapkey('n', "<leader>l", function() ui.nav_file(3) end)
-            mapkey('n', "<leader>;", function() ui.nav_file(4) end)
-        end,
-    },
-    {
-        'nvim-neo-tree/neo-tree.nvim',
-        branch = 'v2.x',
-        dependencies = {
-            'MunifTanjim/nui.nvim',
-            'nvim-lua/plenary.nvim',
-            'nvim-tree/nvim-web-devicons',
-        },
-        keys = {
-            { "<leader>cf", "<cmd>Neotree filesystem left<cr>", desc = "Toggle NeoTree" },
-        },
-        config = function()
-            vim.cmd('let g:neo_tree_remove_legacy_commands = 1')
-            require('neo-tree').setup({
-                close_if_last_window = true,
-            })
-        end,
-    },
-    {
-        'VonHeikemen/lsp-zero.nvim',
-        branch = 'v1.x',
-        dependencies = {
-            -- LSP Support
-            'neovim/nvim-lspconfig',
-            'williamboman/mason-lspconfig.nvim',
-            'williamboman/mason.nvim',
-            -- Autocompletion
-            'hrsh7th/cmp-buffer',
-            'hrsh7th/cmp-nvim-lsp',
-            'hrsh7th/cmp-nvim-lua',
-            'hrsh7th/cmp-path',
-            'hrsh7th/nvim-cmp',
-            'saadparwaiz1/cmp_luasnip',
-            -- Snippets
-            'L3MON4D3/LuaSnip',
-            'rafamadriz/friendly-snippets',
-        },
-        config = function()
-            local lsp = require('lsp-zero')
-            lsp.preset('recommended')
-            lsp.nvim_workspace()
-            lsp.setup()
-            mapkey('n', '<leader>ff', function()
-                vim.lsp.buf.format()
-            end)
-        end,
-    },
-    {
-        'wuelnerdotexe/vim-astro',
-        config = function()
-            vim.g.astro_typescript = 'enable'
-        end,
+            require('hurl').setup({})
+        end
     },
 })
