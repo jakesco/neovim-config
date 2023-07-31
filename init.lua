@@ -61,7 +61,7 @@ mapkey('x', '<leader>cv', '"_dP', { desc = 'Paste over selection without replaci
 mapkey('n', '<leader>cx', '<cmd>!chmod +x %<CR>', { desc = 'Set exec flag on file' })
 mapkey('n', '<leader>c\\', ':vsp<cr>')
 mapkey('n', '<leader>c-', ':sp<cr>')
-mapkey('n', '<leader>r', ':!<up><cr>', { desc = 'Run last external program' })
+mapkey('n', '<leader>cr', ':!<up><cr>', { desc = 'Run last external program' })
 mapkey('n', '<leader>y', '"+y')
 mapkey('n', '<leader>p', '"+p')
 mapkey('v', '<leader>y', '"+y')
