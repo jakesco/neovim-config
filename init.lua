@@ -130,6 +130,7 @@ require("lazy").setup({
   'tpope/vim-commentary',
   'tpope/vim-surround',
   'tpope/vim-sleuth',
+  'github/copilot.vim',
   {
     'nvim-lualine/lualine.nvim',
     lazy = false,
