@@ -132,6 +132,14 @@ require("lazy").setup({
   'tpope/vim-sleuth',
   'github/copilot.vim',
   {
+    'Mofiqul/adwaita.nvim',
+    lazy = false,
+    priority = 1000,
+    config = function()
+      vim.cmd.colorscheme('adwaita')
+    end,
+  },
+  {
     'nvim-lualine/lualine.nvim',
     lazy = false,
     priority = 90,
@@ -143,18 +151,6 @@ require("lazy").setup({
         section_separators = '',
       },
     },
-  },
-  {
-    'catppuccin/nvim',
-    name = 'catppuccin',
-    lazy = false,
-    priority = 1000,
-    config = function()
-      require('catppuccin').setup({
-        no_italic = true,
-      })
-      vim.cmd.colorscheme('catppuccin-macchiato')
-    end,
   },
   { 'folke/which-key.nvim', opts = {} },
   {
