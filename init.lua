@@ -7,6 +7,7 @@
 --
 -- ====================================
 -- Inspired by https://github.com/nvim-lua/kickstart.nvim
+
 -------------------------------------------------------------------------------
 -- General Settings -----------------------------------------------------------
 -------------------------------------------------------------------------------
@@ -416,11 +417,11 @@ end
 --  If you want to override the default filetypes that your language server will attach to you can
 --  define the property 'filetypes' to the map in question.
 local servers = {
-  -- clangd = {},
   -- gopls = {},
   -- tsserver = {},
   -- html = { filetypes = { 'html', 'twig', 'hbs'} },
 
+  clangd = {},
   pyright = {},
   rust_analyzer = {},
   lua_ls = {
