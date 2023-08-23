@@ -422,15 +422,15 @@ local servers = {
   -- html = { filetypes = { 'html', 'twig', 'hbs'} },
 
   clangd = {},
-  pyright = {},
-  rust_analyzer = {},
+  -- pyright = {},
+  -- rust_analyzer = {},
   lua_ls = {
     Lua = {
       workspace = { checkThirdParty = false },
       telemetry = { enable = false },
     },
   },
-  zls = {},
+  -- zls = {},
 }
 
 -- Setup neovim lua configuration
