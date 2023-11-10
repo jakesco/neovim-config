@@ -60,8 +60,8 @@ mapkey('n', '<leader>cp', ':Lazy<cr>', { desc = 'Open Lazy' })
 -- mapkey('n', '<leader>cf', vim.cmd.Ex, { desc = 'Open netrw' })
 mapkey('x', '<leader>cv', '"_dP', { desc = 'Paste over selection without replacing buffer' })
 mapkey('n', '<leader>cx', '<cmd>!chmod +x %<CR>', { desc = 'Set exec flag on file' })
-mapkey('n', '<leader>c\\', ':vsp<cr>')
-mapkey('n', '<leader>c-', ':sp<cr>')
+mapkey('n', '<leader>c\\', ':vsp<cr>', { desc = "Vertical Split" })
+mapkey('n', '<leader>c-', ':sp<cr>', { desc = "Horizontal Split" })
 mapkey('n', '<leader>cr', ':!<up><cr>', { desc = 'Run last external program' })
 mapkey('n', '<leader>y', '"+y')
 mapkey('n', '<leader>p', '"+p')
@@ -133,17 +133,18 @@ require("lazy").setup({
   'tpope/vim-sleuth',
   'github/copilot.vim',
   {
-    'projekt0n/github-nvim-theme',
+    'catppuccin/nvim',
+    name = "catppuccin",
     lazy = false,
     priority = 1000,
     config = function()
-      vim.cmd.colorscheme('github_dark')
+      vim.cmd.colorscheme('catppuccin-frappe')
     end,
   },
   {
     'nvim-lualine/lualine.nvim',
     lazy = false,
-    priority = 90,
+    priority = 900,
     opts = {
       options = {
         icons_enabled = false,
@@ -152,6 +153,11 @@ require("lazy").setup({
         section_separators = '',
       },
     },
+  },
+  {
+    "folke/todo-comments.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    opts = {},
   },
   { 'folke/which-key.nvim', opts = {} },
   {
@@ -166,24 +172,28 @@ require("lazy").setup({
         changedelete = { text = '~' },
       },
       on_attach = function(bufnr)
-        mapkey('n', '<leader>gp', require('gitsigns').prev_hunk,
-          { buffer = bufnr, desc = '[G]o to [P]revious Hunk' })
-        mapkey('n', '<leader>gn', require('gitsigns').next_hunk,
-          { buffer = bufnr, desc = '[G]o to [N]ext Hunk' })
-        mapkey('n', '<leader>ph', require('gitsigns').preview_hunk,
-          { buffer = bufnr, desc = '[P]review [H]unk' })
+        mapkey('n', '<leader>cgp', require('gitsigns').prev_hunk,
+          { buffer = bufnr, desc = '[G]it [P]revious Hunk' })
+        mapkey('n', '<leader>cgn', require('gitsigns').next_hunk,
+          { buffer = bufnr, desc = '[G]it [N]ext Hunk' })
+        mapkey('n', '<leader>cgh', require('gitsigns').preview_hunk,
+          { buffer = bufnr, desc = '[G]it preview [H]unk' })
       end,
     },
   },
   {
-    "folke/todo-comments.nvim",
-    dependencies = { "nvim-lua/plenary.nvim" },
-    opts = {},
-  },
-  {
     'nvim-telescope/telescope.nvim',
     branch = '0.1.x',
-    dependencies = { 'nvim-lua/plenary.nvim' },
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      {
+        'nvim-telescope/telescope-fzf-native.nvim',
+        build = 'make',
+        cond = function()
+          return vim.fn.executable 'make' == 1
+        end,
+      },
+    },
     config = function()
       require('telescope').setup({
         defaults = {
@@ -220,15 +230,9 @@ require("lazy").setup({
       mapkey('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
       mapkey('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
       mapkey('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
+
+      pcall(require('telescope').load_extension, 'fzf')
     end
-  },
-  {
-    'nvim-telescope/telescope-fzf-native.nvim',
-    dependencies = { 'nvim-telescope/telescope.nvim' },
-    build = 'make',
-    cond = function()
-      return vim.fn.executable 'make' == 1
-    end,
   },
   {
     'nvim-treesitter/nvim-treesitter',
@@ -236,9 +240,6 @@ require("lazy").setup({
       'nvim-treesitter/nvim-treesitter-textobjects',
     },
     build = ':TSUpdate',
-    config = function()
-      pcall(require('telescope').load_extension, 'fzf')
-    end,
   },
   {
     'ThePrimeagen/harpoon',
