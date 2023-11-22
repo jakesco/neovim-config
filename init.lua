@@ -86,7 +86,6 @@ mapkey('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic mess
 mapkey('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
 mapkey('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
 
-
 -------------------------------------------------------------------------------
 -- Abbreviations --------------------------------------------------------------
 -------------------------------------------------------------------------------
