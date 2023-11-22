@@ -7,10 +7,9 @@
 --
 -- ====================================
 -- Inspired by https://github.com/nvim-lua/kickstart.nvim
+-- za to toggle folding
 
--------------------------------------------------------------------------------
--- General Settings -----------------------------------------------------------
--------------------------------------------------------------------------------
+--{{{ Options
 local set = vim.opt
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
@@ -44,11 +43,9 @@ set.timeoutlen = 300
 set.undofile = true
 set.updatetime = 250
 set.wrap = false
+--}}}
 
-
--------------------------------------------------------------------------------
--- Keymaps --------------------------------------------------------------------
--------------------------------------------------------------------------------
+--{{{ Keymaps
 local mapkey = vim.keymap.set
 mapkey({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 mapkey('n', '<leader>ce', ':edit $MYVIMRC<cr>', { desc = 'Edit init.lua' })
@@ -85,15 +82,13 @@ mapkey('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic 
 mapkey('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
 mapkey('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
 mapkey('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
+--}}}
 
--------------------------------------------------------------------------------
--- Abbreviations --------------------------------------------------------------
--------------------------------------------------------------------------------
+--{{{ Abbreviations
 vim.cmd('iabbrev @@d <C-r>=strftime("%Y-%m-%d")<cr>') -- insert current date
+--}}}
 
--------------------------------------------------------------------------------
--- Auto-commands --------------------------------------------------------------
--------------------------------------------------------------------------------
+--{{{ Auto-commands
 local global_group = vim.api.nvim_create_augroup("GlobalAuCmds", { clear = true })
 
 -- Trim trailing whitespace
@@ -115,10 +110,9 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   group = highlight_group,
   pattern = '*',
 })
+--}}}
 
--------------------------------------------------------------------------------
--- Packages -------------------------------------------------------------------
--------------------------------------------------------------------------------
+--{{{ Lazy Plugin Manager Setup
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
@@ -131,7 +125,9 @@ if not vim.loop.fs_stat(lazypath) then
   })
 end
 set.rtp:prepend(lazypath)
+--}}}
 
+--{{{ Plugins
 require("lazy").setup({
   'tpope/vim-commentary',
   'tpope/vim-surround',
@@ -493,5 +489,6 @@ require("lazy").setup({
     end,
   },
 })
+--}}}
 
--- vim: ts=2 sts=2 sw=2 et
+-- vim: fdm=marker ts=2 sts=2 sw=2 et
