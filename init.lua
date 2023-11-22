@@ -97,7 +97,8 @@ vim.api.nvim_create_autocmd({ "BufWritePre" }, {
   callback = function()
     local winpos = vim.fn.winsaveview()
     vim.cmd([[%substitute/\m\s\+$//e]])
-    vim.fn.winrestview(winpos)
+---@diagnostic disable-next-line: param-type-mismatch
+    vim.fn.winrestview(winpos) -- Lua LSP typing error for winpos for some reason
   end,
   group = global_group,
 })
@@ -162,6 +163,13 @@ require("lazy").setup({
     dependencies = { "nvim-lua/plenary.nvim" },
     opts = {},
   },
+  {
+    'folke/zen-mode.nvim',
+    opts = {},
+    keys = {
+      {"<leader>cz", "<cmd>ZenMode<cr>", desc = "Toggle Zen Mode" },
+    },
+  },
   { 'folke/which-key.nvim', opts = {} },
   {
     'lewis6991/gitsigns.nvim',
@@ -184,6 +192,7 @@ require("lazy").setup({
       end,
     },
   },
+  --{{{ Telescope
   {
     'nvim-telescope/telescope.nvim',
     branch = '0.1.x',
@@ -237,6 +246,8 @@ require("lazy").setup({
       pcall(require('telescope').load_extension, 'fzf')
     end
   },
+  --}}}
+  --{{{ Treesitter
   {
     'nvim-treesitter/nvim-treesitter',
     dependencies = {
@@ -310,20 +321,8 @@ require("lazy").setup({
       }
     end,
   },
-  {
-    'ThePrimeagen/harpoon',
-    dependencies = { 'nvim-lua/plenary.nvim' },
-    config = function()
-      local mark = require('harpoon.mark')
-      local ui = require('harpoon.ui')
-      mapkey('n', "<leader>hm", mark.add_file, { desc = "Harpoon current file" })
-      mapkey('n', "<leader>hh", ui.toggle_quick_menu, { desc = "Toggle harpoon quick menu" })
-      mapkey('n', "<leader>j", function() ui.nav_file(1) end)
-      mapkey('n', "<leader>k", function() ui.nav_file(2) end)
-      mapkey('n', "<leader>l", function() ui.nav_file(3) end)
-      mapkey('n', "<leader>;", function() ui.nav_file(4) end)
-    end,
-  },
+  --}}}
+  --{{{ LSP
   {
     'neovim/nvim-lspconfig',
     dependencies = {
@@ -488,6 +487,7 @@ require("lazy").setup({
       }
     end,
   },
+  --}}}
 })
 --}}}
 
