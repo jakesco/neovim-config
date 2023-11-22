@@ -128,49 +128,12 @@ end
 set.rtp:prepend(lazypath)
 --}}}
 
---{{{ Plugins
+-- Plugins
 require("lazy").setup({
-  'tpope/vim-commentary',
-  'tpope/vim-surround',
-  'tpope/vim-sleuth',
+  --{{{ Copilot
   'github/copilot.vim',
-  {
-    'ellisonleao/gruvbox.nvim',
-    lazy = false,
-    priority = 1000,
-    config = function()
-      require("gruvbox").setup({
-        contrast="soft",
-      })
-      vim.cmd.colorscheme('gruvbox')
-    end,
-  },
-  {
-    'nvim-lualine/lualine.nvim',
-    lazy = false,
-    priority = 900,
-    opts = {
-      options = {
-        icons_enabled = false,
-        theme = 'auto',
-        component_separators = '|',
-        section_separators = '',
-      },
-    },
-  },
-  {
-    "folke/todo-comments.nvim",
-    dependencies = { "nvim-lua/plenary.nvim" },
-    opts = {},
-  },
-  {
-    'folke/zen-mode.nvim',
-    opts = {},
-    keys = {
-      {"<leader>cz", "<cmd>ZenMode<cr>", desc = "Toggle Zen Mode" },
-    },
-  },
-  { 'folke/which-key.nvim', opts = {} },
+  --}}}
+  --{{{ Git Signs
   {
     'lewis6991/gitsigns.nvim',
     opts = {
@@ -183,142 +146,27 @@ require("lazy").setup({
         changedelete = { text = '~' },
       },
       on_attach = function(bufnr)
-        mapkey('n', '<leader>cgp', require('gitsigns').prev_hunk,
+        local gitsigns = require 'gitsigns'
+        mapkey('n', '<leader>cgp', gitsigns.prev_hunk,
           { buffer = bufnr, desc = '[G]it [P]revious Hunk' })
-        mapkey('n', '<leader>cgn', require('gitsigns').next_hunk,
+        mapkey('n', '<leader>cgn', gitsigns.next_hunk,
           { buffer = bufnr, desc = '[G]it [N]ext Hunk' })
-        mapkey('n', '<leader>cgh', require('gitsigns').preview_hunk,
+        mapkey('n', '<leader>cgh', gitsigns.preview_hunk,
           { buffer = bufnr, desc = '[G]it preview [H]unk' })
       end,
     },
   },
-  --{{{ Telescope
-  {
-    'nvim-telescope/telescope.nvim',
-    branch = '0.1.x',
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-      {
-        'nvim-telescope/telescope-fzf-native.nvim',
-        build = 'make',
-        cond = function()
-          return vim.fn.executable 'make' == 1
-        end,
-      },
-    },
-    config = function()
-      require('telescope').setup({
-        defaults = {
-          mappings = {
-            i = {
-              ['<C-u>'] = false,
-              ['<C-d>'] = false,
-            },
-          },
-          file_ignore_patterns = {
-            ".git",
-          },
-        },
-        pickers = {
-          find_files = {
-            hidden = true,
-          },
-        },
-      })
-      local builtin = require('telescope.builtin')
-      -- See `:help telescope.builtin`
-      mapkey('n', '<leader>?', builtin.oldfiles, { desc = '[?] Find recently opened files' })
-      mapkey('n', '<leader><space>', builtin.buffers, { desc = '[ ] Find existing buffers' })
-      mapkey('n', '<leader>/', function()
-        -- You can pass additional configuration to telescope to change theme, layout, etc.
-        builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
-          winblend = 10,
-          previewer = false,
-        })
-      end, { desc = '[/] Fuzzily search in current buffer' })
-      mapkey('n', '<leader>gf', builtin.git_files, { desc = 'Search [G]it [F]iles' })
-      mapkey('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
-      mapkey('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
-      mapkey('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
-      mapkey('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
-      mapkey('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
-
-      pcall(require('telescope').load_extension, 'fzf')
-    end
-  },
   --}}}
-  --{{{ Treesitter
+  --{{{ Gruvbox
   {
-    'nvim-treesitter/nvim-treesitter',
-    dependencies = {
-      'nvim-treesitter/nvim-treesitter-textobjects',
-    },
-    build = ':TSUpdate',
+    'ellisonleao/gruvbox.nvim',
+    lazy = false,
+    priority = 1000,
     config = function()
-      -- See `:help nvim-treesitter`
-      require('nvim-treesitter.configs').setup {
-        -- Add languages to be installed here that you want installed for treesitter
-        ensure_installed = { 'c', 'cpp','lua', 'python', 'rust', 'tsx', 'vimdoc', 'vim', 'zig' },
-
-        -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
-        auto_install = false,
-
-        highlight = { enable = true },
-        indent = { enable = true },
-        incremental_selection = {
-          enable = true,
-          keymaps = {
-            init_selection = '<c-space>',
-            node_incremental = '<c-space>',
-            scope_incremental = '<c-s>',
-            node_decremental = '<M-space>',
-          },
-        },
-        textobjects = {
-          select = {
-            enable = true,
-            lookahead = true, -- Automatically jump forward to textobj, similar to targets.vim
-            keymaps = {
-              -- You can use the capture groups defined in textobjects.scm
-              ['aa'] = '@parameter.outer',
-              ['ia'] = '@parameter.inner',
-              ['af'] = '@function.outer',
-              ['if'] = '@function.inner',
-              ['ac'] = '@class.outer',
-              ['ic'] = '@class.inner',
-            },
-          },
-          move = {
-            enable = true,
-            set_jumps = true, -- whether to set jumps in the jumplist
-            goto_next_start = {
-              [']m'] = '@function.outer',
-              [']]'] = '@class.outer',
-            },
-            goto_next_end = {
-              [']M'] = '@function.outer',
-              [']['] = '@class.outer',
-            },
-            goto_previous_start = {
-              ['[m'] = '@function.outer',
-              ['[['] = '@class.outer',
-            },
-            goto_previous_end = {
-              ['[M'] = '@function.outer',
-              ['[]'] = '@class.outer',
-            },
-          },
-          swap = {
-            enable = true,
-            swap_next = {
-              ['<leader>a'] = '@parameter.inner',
-            },
-            swap_previous = {
-              ['<leader>A'] = '@parameter.inner',
-            },
-          },
-        },
-      }
+      require("gruvbox").setup({
+        contrast="soft",
+      })
+      vim.cmd.colorscheme('gruvbox')
     end,
   },
   --}}}
@@ -445,6 +293,7 @@ require("lazy").setup({
       require('luasnip.loaders.from_vscode').lazy_load()
       luasnip.config.setup {}
 
+---@diagnostic disable-next-line: missing-fields
       cmp.setup {
         snippet = {
           expand = function(args)
@@ -488,7 +337,177 @@ require("lazy").setup({
     end,
   },
   --}}}
+  --{{{ Lualine
+  {
+    'nvim-lualine/lualine.nvim',
+    lazy = false,
+    priority = 900,
+    opts = {
+      options = {
+        icons_enabled = false,
+        theme = 'auto',
+        component_separators = '|',
+        section_separators = '',
+      },
+    },
+  },
+  --}}}
+  --{{{ Telescope
+  {
+    'nvim-telescope/telescope.nvim',
+    branch = '0.1.x',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      {
+        'nvim-telescope/telescope-fzf-native.nvim',
+        build = 'make',
+        cond = function()
+          return vim.fn.executable 'make' == 1
+        end,
+      },
+    },
+    config = function()
+      require('telescope').setup({
+        defaults = {
+          mappings = {
+            i = {
+              ['<C-u>'] = false,
+              ['<C-d>'] = false,
+            },
+          },
+          file_ignore_patterns = {
+            ".git",
+          },
+        },
+        pickers = {
+          find_files = {
+            hidden = true,
+          },
+        },
+      })
+      local builtin = require('telescope.builtin')
+      -- See `:help telescope.builtin`
+      mapkey('n', '<leader>?', builtin.oldfiles, { desc = '[?] Find recently opened files' })
+      mapkey('n', '<leader>b', builtin.buffers, { desc = '[ ] Find existing buffers' })
+      mapkey('n', '<leader>/', function()
+        -- You can pass additional configuration to telescope to change theme, layout, etc.
+        builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
+          winblend = 10,
+          previewer = false,
+        })
+      end, { desc = '[/] Fuzzily search in current buffer' })
+      mapkey('n', '<leader>gf', builtin.git_files, { desc = 'Search [G]it [F]iles' })
+      mapkey('n', '<leader><space>', builtin.find_files, { desc = '[S]earch [F]iles' })
+      mapkey('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
+      mapkey('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
+      mapkey('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
+      mapkey('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
+
+      pcall(require('telescope').load_extension, 'fzf')
+    end
+  },
+  --}}}
+  --{{{ Todo Comments
+  {
+    "folke/todo-comments.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    opts = {},
+  },
+  --}}}
+  --{{{ Treesitter
+  {
+    'nvim-treesitter/nvim-treesitter',
+    dependencies = {
+      'nvim-treesitter/nvim-treesitter-textobjects',
+    },
+    build = ':TSUpdate',
+    config = function()
+      -- See `:help nvim-treesitter`
+---@diagnostic disable-next-line: missing-fields
+      require('nvim-treesitter.configs').setup {
+        -- Add languages to be installed here that you want installed for treesitter
+        ensure_installed = { 'c', 'cpp','lua', 'python', 'rust', 'tsx', 'vimdoc', 'vim', 'zig' },
+
+        -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
+        auto_install = false,
+
+        highlight = { enable = true },
+        indent = { enable = true },
+        incremental_selection = {
+          enable = true,
+          keymaps = {
+            init_selection = '<c-space>',
+            node_incremental = '<c-space>',
+            scope_incremental = '<c-s>',
+            node_decremental = '<M-space>',
+          },
+        },
+        textobjects = {
+          select = {
+            enable = true,
+            lookahead = true, -- Automatically jump forward to textobj, similar to targets.vim
+            keymaps = {
+              -- You can use the capture groups defined in textobjects.scm
+              ['aa'] = '@parameter.outer',
+              ['ia'] = '@parameter.inner',
+              ['af'] = '@function.outer',
+              ['if'] = '@function.inner',
+              ['ac'] = '@class.outer',
+              ['ic'] = '@class.inner',
+            },
+          },
+          move = {
+            enable = true,
+            set_jumps = true, -- whether to set jumps in the jumplist
+            goto_next_start = {
+              [']m'] = '@function.outer',
+              [']]'] = '@class.outer',
+            },
+            goto_next_end = {
+              [']M'] = '@function.outer',
+              [']['] = '@class.outer',
+            },
+            goto_previous_start = {
+              ['[m'] = '@function.outer',
+              ['[['] = '@class.outer',
+            },
+            goto_previous_end = {
+              ['[M'] = '@function.outer',
+              ['[]'] = '@class.outer',
+            },
+          },
+          swap = {
+            enable = true,
+            swap_next = {
+              ['<leader>a'] = '@parameter.inner',
+            },
+            swap_previous = {
+              ['<leader>A'] = '@parameter.inner',
+            },
+          },
+        },
+      }
+    end,
+  },
+  --}}}
+  --{{{ Vim Commentary
+  'tpope/vim-commentary',
+  --}}}
+  --{{{ Vim Surround
+  'tpope/vim-surround',
+  --}}}
+  --{{{ Which Key
+  { 'folke/which-key.nvim', opts = {} },
+  --}}}
+  --{{{ Zen Mode
+  {
+    'folke/zen-mode.nvim',
+    opts = {},
+    keys = {
+      {"<leader>cz", "<cmd>ZenMode<cr>", desc = "Toggle Zen Mode" },
+    },
+  },
+  --}}}
 })
---}}}
 
 -- vim: fdm=marker ts=2 sts=2 sw=2 et
