@@ -139,12 +139,14 @@ require("lazy").setup({
   'tpope/vim-sleuth',
   'github/copilot.vim',
   {
-    'catppuccin/nvim',
-    name = "catppuccin",
+    'ellisonleao/gruvbox.nvim',
     lazy = false,
     priority = 1000,
     config = function()
-      vim.cmd.colorscheme('catppuccin-frappe')
+      require("gruvbox").setup({
+        contrast="soft",
+      })
+      vim.cmd.colorscheme('gruvbox')
     end,
   },
   {
@@ -334,7 +336,6 @@ require("lazy").setup({
       { 'williamboman/mason.nvim', config = true },
       'williamboman/mason-lspconfig.nvim',
       -- Useful status updates for LSP
-      -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
       { 'j-hui/fidget.nvim', tag = 'legacy', opts = {} },
       -- Additional lua configuration, makes nvim stuff amazing!
       'folke/neodev.nvim',
