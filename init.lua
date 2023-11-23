@@ -113,6 +113,8 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 --}}}
 
+--{{{ Plugins
+
 --{{{ Lazy Plugin Manager Setup
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -128,7 +130,6 @@ end
 set.rtp:prepend(lazypath)
 --}}}
 
--- Plugins
 require("lazy").setup({
   --{{{ Copilot
   'github/copilot.vim',
@@ -398,7 +399,7 @@ require("lazy").setup({
       end, { desc = '[/] Fuzzily search in current buffer' })
       mapkey('n', '<leader>gf', builtin.git_files, { desc = 'Search [G]it [F]iles' })
       mapkey('n', '<leader><space>', builtin.find_files, { desc = '[S]earch [F]iles' })
-      mapkey('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
+      mapkey('n', '<leader>hh', builtin.help_tags, { desc = '[S]earch [H]elp' })
       mapkey('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
       mapkey('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
       mapkey('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
@@ -509,5 +510,6 @@ require("lazy").setup({
   },
   --}}}
 })
+--}}}
 
 -- vim: fdm=marker ts=2 sts=2 sw=2 et
