@@ -41,7 +41,6 @@ set.tabstop = 4
 set.termguicolors = true
 set.timeoutlen = 300
 set.undofile = true
-set.updatetime = 250
 set.wrap = false
 --}}}
 
