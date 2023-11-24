@@ -41,6 +41,7 @@ set.tabstop = 4
 set.termguicolors = true
 set.timeoutlen = 300
 set.undofile = true
+set.updatetime = 250
 set.wrap = false
 --}}}
 
@@ -66,14 +67,13 @@ mapkey('v', '<leader>p', '"+p')
 mapkey('n', '<leader>dd', '^D')
 mapkey('n', '<leader>*', ':%s/\\<<c-r><c-w>\\>//g<left><left>', { desc = 'Search & replace word under cursor' })
 mapkey('o', 'fun', ':<c-u>normal! 0f(hviw<cr>', { desc = 'Change function name' })
-mapkey('v', "J", ":m '>+1<CR>gv=gv")
-mapkey('v', "K", ":m '<-2<CR>gv=gv")
-mapkey('n', 'Y', 'yg$')
+mapkey('v', "J", ":m '>+1<CR>gv=gv", { desc = 'Move highlighted lines down'})
+mapkey('v', "K", ":m '<-2<CR>gv=gv", { desc = 'Move highlighted lines up'})
 mapkey('n', 'J', 'mzJ`z')
 mapkey('n', '<C-d>', '<C-d>zz')
 mapkey('n', '<C-u>', '<C-u>zz')
-mapkey('n', 'n', 'nzzzv')
-mapkey('n', 'N', 'nzzzv')
+mapkey('n', 'n', 'nzz')
+mapkey('n', 'N', 'nzz')
 mapkey('n', 'Q', '<nop>')
 
 -- Diagnostic keymaps
@@ -92,23 +92,33 @@ local global_group = vim.api.nvim_create_augroup("GlobalAuCmds", { clear = true 
 
 -- Trim trailing whitespace
 vim.api.nvim_create_autocmd({ "BufWritePre" }, {
-  pattern = { "*" },
+  pattern = '*',
+  group = global_group,
   callback = function()
     local winpos = vim.fn.winsaveview()
     vim.cmd([[%substitute/\m\s\+$//e]])
----@diagnostic disable-next-line: param-type-mismatch
+    ---@diagnostic disable-next-line: param-type-mismatch
     vim.fn.winrestview(winpos) -- Lua LSP typing error for winpos for some reason
   end,
-  group = global_group,
 })
 
+-- Stop auto commenting newlines with o
+vim.api.nvim_create_autocmd({ "FileType" }, {
+  pattern = '*',
+  group = global_group,
+  callback = function()
+    set.formatoptions:remove('o')
+  end,
+})
+
+-- Highlight text yank
 local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
 vim.api.nvim_create_autocmd('TextYankPost', {
+  pattern = '*',
+  group = highlight_group,
   callback = function()
     vim.highlight.on_yank()
   end,
-  group = highlight_group,
-  pattern = '*',
 })
 --}}}
 
@@ -293,7 +303,7 @@ require("lazy").setup({
       require('luasnip.loaders.from_vscode').lazy_load()
       luasnip.config.setup {}
 
----@diagnostic disable-next-line: missing-fields
+      ---@diagnostic disable-next-line: missing-fields
       cmp.setup {
         snippet = {
           expand = function(args)
@@ -382,6 +392,7 @@ require("lazy").setup({
         pickers = {
           find_files = {
             hidden = true,
+            theme = "dropdown",
           },
         },
       })
@@ -423,7 +434,7 @@ require("lazy").setup({
     build = ':TSUpdate',
     config = function()
       -- See `:help nvim-treesitter`
----@diagnostic disable-next-line: missing-fields
+      ---@diagnostic disable-next-line: missing-fields
       require('nvim-treesitter.configs').setup {
         -- Add languages to be installed here that you want installed for treesitter
         ensure_installed = { 'c', 'cpp','lua', 'python', 'rust', 'tsx', 'vimdoc', 'vim', 'zig' },
