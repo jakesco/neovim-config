@@ -11,15 +11,15 @@
 
 --{{{ Options
 local set = vim.opt
-vim.g.mapleader = " "
-vim.g.maplocalleader = " "
+vim.g.mapleader = ' '
+vim.g.maplocalleader = ' '
 -- vim.g.netrw_banner = 0
 
 set.background = 'dark'
 set.breakindent = true
-set.completeopt:append({'menu', 'menuone', 'noselect'})
+set.completeopt:append { 'menu', 'menuone', 'noselect' }
 set.cursorline = true
-set.diffopt:append('vertical')
+set.diffopt:append 'vertical'
 set.expandtab = true
 set.hidden = true
 set.hlsearch = true
@@ -31,11 +31,11 @@ set.list = true
 set.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 set.mouse = 'a'
 set.number = true
-set.path:append('**')
+set.path:append '**'
 set.relativenumber = true
 set.scrolloff = 8
 set.shiftwidth = 4
-set.shortmess:append('c')
+set.shortmess:append 'c'
 set.showmode = false
 set.sidescrolloff = 8
 set.signcolumn = 'yes'
@@ -71,8 +71,8 @@ mapkey('v', '<leader>p', '"+p')
 mapkey('n', '<leader>dd', '^D')
 mapkey('n', '<leader>*', ':%s/\\<<c-r><c-w>\\>//g<left><left>', { desc = 'Search & replace word under cursor' })
 mapkey('o', 'fun', ':<c-u>normal! 0f(hviw<cr>', { desc = 'Change function name' })
-mapkey('v', "J", ":m '>+1<CR>gv=gv", { desc = 'Move highlighted lines down'})
-mapkey('v', "K", ":m '<-2<CR>gv=gv", { desc = 'Move highlighted lines up'})
+mapkey('v', 'J', ":m '>+1<CR>gv=gv", { desc = 'Move highlighted lines down' })
+mapkey('v', 'K', ":m '<-2<CR>gv=gv", { desc = 'Move highlighted lines up' })
 mapkey('n', 'J', 'mzJ`z')
 mapkey('n', '<C-d>', '<C-d>zz')
 mapkey('n', '<C-u>', '<C-u>zz')
@@ -88,30 +88,30 @@ mapkey('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics l
 --}}}
 
 --{{{ Abbreviations
-vim.cmd('iabbrev @@d <C-r>=strftime("%Y-%m-%d")<cr>') -- insert current date
+vim.cmd 'iabbrev @@d <C-r>=strftime("%Y-%m-%d")<cr>' -- insert current date
 --}}}
 
 --{{{ Auto-commands
-local global_group = vim.api.nvim_create_augroup("GlobalAuCmds", { clear = true })
+local global_group = vim.api.nvim_create_augroup('GlobalAuCmds', { clear = true })
 
 -- Trim trailing whitespace
-vim.api.nvim_create_autocmd({ "BufWritePre" }, {
+vim.api.nvim_create_autocmd({ 'BufWritePre' }, {
   pattern = '*',
   group = global_group,
   callback = function()
     local winpos = vim.fn.winsaveview()
-    vim.cmd([[%substitute/\m\s\+$//e]])
+    vim.cmd [[%substitute/\m\s\+$//e]]
     ---@diagnostic disable-next-line: param-type-mismatch
     vim.fn.winrestview(winpos) -- Lua LSP typing error for winpos for some reason
   end,
 })
 
 -- Stop auto commenting newlines with o
-vim.api.nvim_create_autocmd({ "FileType" }, {
+vim.api.nvim_create_autocmd({ 'FileType' }, {
   pattern = '*',
   group = global_group,
   callback = function()
-    set.formatoptions:remove('o')
+    set.formatoptions:remove 'o'
   end,
 })
 
@@ -129,21 +129,49 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 --{{{ Plugins
 
 --{{{ Lazy Plugin Manager Setup
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
-  vim.fn.system({
-    "git",
-    "clone",
-    "--filter=blob:none",
-    "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable",
+  vim.fn.system {
+    'git',
+    'clone',
+    '--filter=blob:none',
+    'https://github.com/folke/lazy.nvim.git',
+    '--branch=stable',
     lazypath,
-  })
+  }
 end
 set.rtp:prepend(lazypath)
 --}}}
 
-require("lazy").setup({
+require('lazy').setup {
+  --{{{ Gruvbox
+  {
+    'ellisonleao/gruvbox.nvim',
+    lazy = false,
+    priority = 1000,
+    config = function()
+      require('gruvbox').setup {
+        contrast = 'soft',
+      }
+      vim.cmd.colorscheme 'gruvbox'
+    end,
+  },
+  --}}}
+  --{{{ Lualine
+  {
+    'nvim-lualine/lualine.nvim',
+    lazy = false,
+    priority = 900,
+    opts = {
+      options = {
+        icons_enabled = false,
+        theme = 'auto',
+        component_separators = '|',
+        section_separators = '',
+      },
+    },
+  },
+  --}}}
   --{{{ Git Signs
   {
     'lewis6991/gitsigns.nvim',
@@ -158,27 +186,11 @@ require("lazy").setup({
       },
       on_attach = function(bufnr)
         local gitsigns = require 'gitsigns'
-        mapkey('n', '<leader>cgp', gitsigns.prev_hunk,
-          { buffer = bufnr, desc = '[G]it [P]revious Hunk' })
-        mapkey('n', '<leader>cgn', gitsigns.next_hunk,
-          { buffer = bufnr, desc = '[G]it [N]ext Hunk' })
-        mapkey('n', '<leader>cgh', gitsigns.preview_hunk,
-          { buffer = bufnr, desc = '[G]it preview [H]unk' })
+        mapkey('n', '<leader>cgp', gitsigns.prev_hunk, { buffer = bufnr, desc = '[G]it [P]revious Hunk' })
+        mapkey('n', '<leader>cgn', gitsigns.next_hunk, { buffer = bufnr, desc = '[G]it [N]ext Hunk' })
+        mapkey('n', '<leader>cgh', gitsigns.preview_hunk, { buffer = bufnr, desc = '[G]it preview [H]unk' })
       end,
     },
-  },
-  --}}}
-  --{{{ Gruvbox
-  {
-    'ellisonleao/gruvbox.nvim',
-    lazy = false,
-    priority = 1000,
-    config = function()
-      require("gruvbox").setup({
-        contrast="soft",
-      })
-      vim.cmd.colorscheme('gruvbox')
-    end,
   },
   --}}}
   --{{{ LSP
@@ -277,19 +289,8 @@ require("lazy").setup({
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
-        -- clangd = {},
-        -- gopls = {},
-        -- pyright = {},
-        -- rust_analyzer = {},
-        -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
-        --
-        -- Some languages (like typescript) have entire language plugins that can be useful:
-        --    https://github.com/pmizio/typescript-tools.nvim
-        --
-        -- But for many setups, the LSP (`tsserver`) will work just fine
-        -- tsserver = {},
-        --
-
+        gopls = {},
+        pyright = {},
         lua_ls = {
           -- cmd = {...},
           -- filetypes { ...},
@@ -348,12 +349,7 @@ require("lazy").setup({
       },
       formatters_by_ft = {
         lua = { 'stylua' },
-        -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
-        --
-        -- You can use a sub-list to tell conform to run *until* a formatter
-        -- is found.
-        -- javascript = { { "prettierd", "prettier" } },
+        python = { 'ruff_format' },
       },
     },
   },
@@ -459,21 +455,6 @@ require("lazy").setup({
     end,
   },
   --}}}
-  --{{{ Lualine
-  {
-    'nvim-lualine/lualine.nvim',
-    lazy = false,
-    priority = 900,
-    opts = {
-      options = {
-        icons_enabled = false,
-        theme = 'auto',
-        component_separators = '|',
-        section_separators = '',
-      },
-    },
-  },
-  --}}}
   --{{{ Telescope
   {
     'nvim-telescope/telescope.nvim',
@@ -492,18 +473,18 @@ require("lazy").setup({
       'nvim-tree/nvim-web-devicons',
     },
     config = function()
-      require('telescope').setup({
+      require('telescope').setup {
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
           },
         },
-      })
+      }
 
       pcall(require('telescope').load_extension, 'fzf')
       pcall(require('telescope').load_extension, 'ui-select')
 
-      local builtin = require('telescope.builtin')
+      local builtin = require 'telescope.builtin'
       -- See `:help telescope.builtin`
       mapkey('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
       mapkey('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
@@ -530,14 +511,14 @@ require("lazy").setup({
       mapkey('n', '<leader>sn', function()
         builtin.find_files { cwd = vim.fn.stdpath 'config' }
       end, { desc = '[S]earch [N]eovim files' })
-    end
+    end,
   },
   --}}}
   --{{{ Todo Comments
   {
-    "folke/todo-comments.nvim",
+    'folke/todo-comments.nvim',
     event = 'VimEnter',
-    dependencies = { "nvim-lua/plenary.nvim" },
+    dependencies = { 'nvim-lua/plenary.nvim' },
     opts = { signs = false },
   },
   --}}}
@@ -591,11 +572,11 @@ require("lazy").setup({
     'folke/zen-mode.nvim',
     opts = {},
     keys = {
-      {"<leader>cz", "<cmd>ZenMode<cr>", desc = "Toggle Zen Mode" },
+      { '<leader>vz', '<cmd>ZenMode<cr>', desc = 'Toggle Zen Mode' },
     },
   },
   --}}}
-})
+}
 --}}}
 
 -- vim: fdm=marker ts=2 sts=2 sw=2 et
