@@ -17,11 +17,32 @@ local servers = {
       },
     },
   },
+  pylsp = {
+    settings = {
+      pylsp = {
+        -- You will need to manually install these with
+        -- :PylspInstall pylsp-mypy python-lsp-ruff
+        plugins = {
+          mypy = {
+            enabled = true,
+            live_mode = true,
+          },
+          ruff = {
+            enabled = true,
+            formatEnabled = true,
+          },
+        },
+      },
+    },
+  },
+  -- haskell-language-server is managed by ghcup and haskell-tools
+  --   don't configure it here
 }
 
--- define additional tools to install
+-- define tools to auto install
 local tools = {
   'stylua', -- Used to format lua code
+  'ruff', -- Python formatting
 }
 
 return {
