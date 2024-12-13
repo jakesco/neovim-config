@@ -17,6 +17,7 @@ local servers = {
       },
     },
   },
+  rust_analyzer = {},
   pylsp = {
     settings = {
       pylsp = {
