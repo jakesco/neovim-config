@@ -37,3 +37,11 @@ mapkey('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic 
 mapkey('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
 mapkey('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
 mapkey('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
+
+-- Terminal Keymaps
+mapkey('n', '<space>vt', function()
+  vim.cmd.vnew()
+  vim.cmd.term()
+  vim.cmd.wincmd('J')
+  vim.api.nvim_win_set_height(0, 15)
+end, { desc = 'Split Terminal' })

@@ -30,3 +30,12 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     vim.highlight.on_yank()
   end,
 })
+
+-- Terminal options
+vim.api.nvim_create_autocmd('TermOpen', {
+  group = global_group,
+  callback = function()
+    vim.opt.number = false
+    vim.opt.relativenumber = false
+  end,
+})
